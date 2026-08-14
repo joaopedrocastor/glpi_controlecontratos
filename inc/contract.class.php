@@ -430,6 +430,12 @@ class PluginControlecontratosContract extends CommonDBTM
             return false;
         }
 
+        // A coluna 'value' (decimal NOT NULL) foi removida da tela, mas continua no
+        // banco. Garante que nunca chegue string vazia (que o MySQL rejeitaria).
+        if (array_key_exists('value', $input) && ($input['value'] === '' || $input['value'] === null)) {
+            $input['value'] = 0;
+        }
+
         return $input;
     }
 }
