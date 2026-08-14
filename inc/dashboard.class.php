@@ -36,12 +36,28 @@ class PluginControlecontratosDashboard extends CommonGLPI
         }
         unset($row);
 
-        $webdir = Plugin::getWebDir('controlecontratos');
+        $webdir   = Plugin::getWebDir('controlecontratos');
+        $listBase = $webdir . '/front/contract.php';
+
+        // URLs da lista já filtradas por tipo (opção de busca id 7 = kind).
+        $filterUrl = function ($kind) use ($listBase) {
+            return $listBase . '?' . http_build_query([
+                'reset'    => 'reset',
+                'criteria' => [[
+                    'field'      => 7,
+                    'searchtype' => 'equals',
+                    'value'      => $kind,
+                ]],
+            ]);
+        };
+
         \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/dashboard.html.twig', [
-            'stats'    => $stats,
-            'expiring' => $expiring,
-            'form_url' => $webdir . '/front/contract.form.php',
-            'list_url' => $webdir . '/front/contract.php',
+            'stats'         => $stats,
+            'expiring'      => $expiring,
+            'form_url'      => $webdir . '/front/contract.form.php',
+            'list_url'      => $listBase,
+            'contract_url'  => $filterUrl('contract'),
+            'license_url'   => $filterUrl('license'),
         ]);
     }
 }
