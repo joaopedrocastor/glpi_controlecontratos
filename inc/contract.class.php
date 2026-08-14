@@ -242,7 +242,7 @@ class PluginControlecontratosContract extends CommonDBTM
             'id'       => '2',
             'table'    => self::getTable(),
             'field'    => 'partner',
-            'name'     => __('Fornecedor / Cliente', 'controlecontratos'),
+            'name'     => __('Fornecedor', 'controlecontratos'),
             'datatype' => 'string',
         ];
         $tab[] = [
