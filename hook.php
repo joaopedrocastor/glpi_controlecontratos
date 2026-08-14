@@ -163,6 +163,35 @@ function plugin_controlecontratos_install()
         $_SESSION['glpiactiveprofile'][$right] = ALLSTANDARDRIGHT;
     }
 
+    // ---------------------------------------------------------------------
+    // 6) Colunas padrão da listagem (display preferences).
+    //    Sem isso a busca só mostra a coluna "Nome". Os números são os IDs
+    //    das opções de pesquisa definidas em rawSearchOptions().
+    //    users_id=0 => padrão para todos os usuários sem preferência própria.
+    // ---------------------------------------------------------------------
+    $itemtype   = 'PluginControlecontratosContract';
+    $columns     = [
+        7 => 1,  // Tipo (Contrato/Licença)
+        2 => 2,  // Fornecedor
+        3 => 3,  // Data de início
+        4 => 4,  // Data de término
+        6 => 5,  // Status
+    ];
+    foreach ($columns as $num => $rank) {
+        $already = $DB->request([
+            'FROM'  => 'glpi_displaypreferences',
+            'WHERE' => ['itemtype' => $itemtype, 'num' => $num, 'users_id' => 0],
+        ])->count();
+        if (!$already) {
+            $DB->insert('glpi_displaypreferences', [
+                'itemtype' => $itemtype,
+                'num'      => $num,
+                'rank'     => $rank,
+                'users_id' => 0,
+            ]);
+        }
+    }
+
     // Registra a CronTask de verificação diária de vencimentos.
     CronTask::register(
         'PluginControlecontratosCron',
@@ -204,6 +233,9 @@ function plugin_controlecontratos_uninstall()
 
     // Remove os direitos de perfil criados na instalação.
     ProfileRight::deleteProfileRights(['plugin_controlecontratos_contract']);
+
+    // Remove as preferências de exibição (colunas padrão da lista).
+    $DB->delete('glpi_displaypreferences', ['itemtype' => 'PluginControlecontratosContract']);
 
     // Remove a CronTask registrada.
     CronTask::unregister('controlecontratos');
