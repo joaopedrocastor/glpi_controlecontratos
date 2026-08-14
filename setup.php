@@ -42,9 +42,8 @@ function plugin_init_controlecontratos()
             'css/controlecontratos.css',
         ];
 
-        // Hook moderno para injetar o "Sino" de notificações na navbar (display_header).
+        // Injeta o "Sino" de notificações (renderizado na página central).
         $PLUGIN_HOOKS[Hooks::DISPLAY_CENTRAL]['controlecontratos'] = 'plugin_controlecontratos_display_header';
-        $PLUGIN_HOOKS[Hooks::PRE_ITEM_FORM]['controlecontratos'] = [];
 
         // Menu principal do plugin (Ativos > CONTROLE DE CONTRATOS).
         $PLUGIN_HOOKS['menu_toadd']['controlecontratos'] = [
@@ -52,11 +51,9 @@ function plugin_init_controlecontratos()
         ];
 
         // Página de configuração acessível via Configurar > Plugins.
-        $PLUGIN_HOOKS[Hooks::CONFIG_PAGE]['controlecontratos'] = 'front/config.form.php';
+        // ('config_page' é uma string de hook — não existe constante Hooks::CONFIG_PAGE.)
+        $PLUGIN_HOOKS['config_page']['controlecontratos'] = 'front/config.form.php';
     }
-
-    // Registra a CronTask de verificação diária de vencimentos.
-    $PLUGIN_HOOKS[Hooks::CRON]['controlecontratos'] = true;
 
     // Registra abas nativas (Anexos e Preferências) na ficha do contrato.
     Plugin::registerClass('PluginControlecontratosContract', [
