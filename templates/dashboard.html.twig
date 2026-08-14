@@ -2,7 +2,17 @@
  # Dashboard — CONTROLE DE CONTRATOS. Stat cards + tabela de vencimentos (Tabler).
  #}
 <div class="container-fluid">
-   <h2 class="mb-3"><i class="ti ti-dashboard me-2"></i>{{ __('CONTROLE DE CONTRATOS', 'controlecontratos') }}</h2>
+   <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+      <h2 class="mb-0"><i class="ti ti-dashboard me-2"></i>{{ __('CONTROLE DE CONTRATOS', 'controlecontratos') }}</h2>
+      <div>
+         <a href="{{ form_url }}" class="btn btn-primary me-1">
+            <i class="ti ti-plus me-1"></i>{{ __('Novo contrato / licença', 'controlecontratos') }}
+         </a>
+         <a href="{{ list_url }}" class="btn btn-outline-secondary">
+            <i class="ti ti-list me-1"></i>{{ __('Ver todos', 'controlecontratos') }}
+         </a>
+      </div>
+   </div>
 
    <div class="row row-cards mb-4">
       {# Ativos #}
