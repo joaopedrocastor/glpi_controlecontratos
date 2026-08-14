@@ -374,6 +374,11 @@ class PluginControlecontratosContract extends CommonDBTM
      */
     public static function showNotificationBell()
     {
+        // Dispensado nesta sessão → não exibe (volta só no próximo login).
+        if (!empty($_SESSION['plugin_controlecontratos_bell_dismissed'])) {
+            return;
+        }
+
         $contracts = self::getExpiringContracts(30);
         $count     = count($contracts);
 
@@ -387,10 +392,12 @@ class PluginControlecontratosContract extends CommonDBTM
         }
         unset($row);
 
+        $webdir = Plugin::getWebDir('controlecontratos');
         \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/bell.html.twig', [
-            'count'     => $count,
-            'contracts' => $contracts,
-            'form_url'  => Plugin::getWebDir('controlecontratos') . '/front/contract.form.php',
+            'count'       => $count,
+            'contracts'   => $contracts,
+            'form_url'    => $webdir . '/front/contract.form.php',
+            'dismiss_url' => $webdir . '/front/bell_dismiss.php',
         ]);
     }
 

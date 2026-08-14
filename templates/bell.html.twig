@@ -39,5 +39,12 @@
             {{ __('Nenhum contrato a vencer nos próximos 30 dias.', 'controlecontratos') }}
          </div>
       {% endfor %}
+
+      {# Dispensar — some o sino até o próximo login #}
+      <a href="{{ dismiss_url }}"
+         style="display:block; padding:.6rem .85rem; text-align:center; text-decoration:none;
+                color:var(--tblr-secondary, #667382); border-top:1px solid var(--tblr-border-color, #eef0f2);">
+         <i class="ti ti-check me-1"></i>{{ __('Dispensar até o próximo login', 'controlecontratos') }}
+      </a>
    </div>
 </details>
