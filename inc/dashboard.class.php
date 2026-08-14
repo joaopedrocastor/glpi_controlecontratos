@@ -36,7 +36,7 @@ class PluginControlecontratosDashboard extends CommonGLPI
         }
         unset($row);
 
-        TemplateRenderer::getInstance()->display('@controlecontratos/dashboard.html.twig', [
+        \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/dashboard.html.twig', [
             'stats'    => $stats,
             'expiring' => $expiring,
             'form_url' => Plugin::getWebDir('controlecontratos') . '/front/contract.form.php',

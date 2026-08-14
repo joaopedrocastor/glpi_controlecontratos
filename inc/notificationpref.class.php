@@ -53,7 +53,7 @@ class PluginControlecontratosNotificationpref extends CommonDBTM
         $users_id = Session::getLoginUserID();
         $pref     = self::getForUser($users_id);
 
-        TemplateRenderer::getInstance()->display('@controlecontratos/notificationpref.html.twig', [
+        \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/notificationpref.html.twig', [
             'pref'     => $pref,
             'contract' => $contract,
             'target'   => Plugin::getWebDir('controlecontratos') . '/front/notificationpref.form.php',

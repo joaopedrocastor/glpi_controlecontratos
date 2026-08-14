@@ -86,7 +86,7 @@ class PluginControlecontratosContract extends CommonDBTM
         $this->initForm($ID, $options);
 
         // Renderização nativa via Twig — herda o layout Tabler e a responsividade.
-        TemplateRenderer::getInstance()->display('@controlecontratos/contract.html.twig', [
+        \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/contract.html.twig', [
             'item'          => $this,
             'params'        => $options,
             'status_list'   => self::getStatusArray(),
@@ -275,10 +275,10 @@ class PluginControlecontratosContract extends CommonDBTM
         if ($onlyExpired) {
             $where['date_end'] = ['<', $today];
         } else {
-            $where['date_end'] = ['>=', $today];
-            $where[] = new \QueryExpression(
-                "`date_end` <= " . $DB->quote($limit)
-            );
+            // Faixa (>= hoje E <= limite) usando o array de critérios nativo do GLPI,
+            // sem depender de QueryExpression (que mudou de namespace entre versões).
+            $where[] = ['date_end' => ['>=', $today]];
+            $where[] = ['date_end' => ['<=', $limit]];
         }
 
         $iterator = $DB->request([
@@ -335,7 +335,7 @@ class PluginControlecontratosContract extends CommonDBTM
         }
         unset($row);
 
-        TemplateRenderer::getInstance()->display('@controlecontratos/bell.html.twig', [
+        \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/bell.html.twig', [
             'count'     => $count,
             'contracts' => $contracts,
             'form_url'  => Plugin::getWebDir('controlecontratos') . '/front/contract.form.php',

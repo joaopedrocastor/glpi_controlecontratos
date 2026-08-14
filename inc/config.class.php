@@ -75,7 +75,7 @@ class PluginControlecontratosConfig extends CommonDBTM
 
         $config = self::getConfig();
 
-        TemplateRenderer::getInstance()->display('@controlecontratos/config.html.twig', [
+        \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/config.html.twig', [
             'config'      => $config,
             'target'      => Plugin::getWebDir('controlecontratos') . '/front/config.form.php',
             // CSRF token é adicionado automaticamente pelo template base do GLPI (Html::hidden('_glpi_csrf_token')).
