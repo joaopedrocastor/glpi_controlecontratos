@@ -1,0 +1,42 @@
+{#
+ # Aba de Preferências de Notificação — escolha de canais (toggles Tabler).
+ # CONTROLE DE CONTRATOS.
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form name="form_notifpref" method="post" action="{{ target }}" data-submit-once>
+   <input type="hidden" name="id" value="{{ pref.fields['id'] }}">
+   <input type="hidden" name="users_id" value="{{ pref.fields['users_id'] }}">
+
+   <div class="card">
+      <div class="card-header">
+         <h3 class="card-title">
+            <i class="ti ti-bell me-2"></i>
+            {{ __('Em quais canais deseja receber os alertas de vencimento?', 'controlecontratos') }}
+         </h3>
+      </div>
+
+      <div class="card-body">
+         <div class="row">
+            {{ fields.sliderField('use_whatsapp', pref.fields['use_whatsapp'], __('WhatsApp', 'controlecontratos')) }}
+            {{ fields.sliderField('use_telegram', pref.fields['use_telegram'], __('Telegram', 'controlecontratos')) }}
+         </div>
+         <div class="row">
+            {{ fields.sliderField('use_teams', pref.fields['use_teams'], __('Microsoft Teams', 'controlecontratos')) }}
+            {{ fields.sliderField('use_webpush', pref.fields['use_webpush'], __('Web Push (Navegador)', 'controlecontratos')) }}
+         </div>
+         <div class="row">
+            {{ fields.textField('whatsapp_number', pref.fields['whatsapp_number'], __('Meu número WhatsApp (E.164)', 'controlecontratos'), {
+               'helper': '5511999998888'
+            }) }}
+         </div>
+      </div>
+
+      <div class="card-footer text-end">
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         <button type="submit" name="update" class="btn btn-primary">
+            <i class="ti ti-device-floppy me-1"></i> {{ _x('button', 'Save') }}
+         </button>
+      </div>
+   </div>
+</form>

@@ -1,0 +1,24 @@
+{
+    "name": "joaopedrocastor/controlecontratos",
+    "description": "Plugin GLPI 10+ de gestão e controle de contratos/licenças com alertas multicanais (WhatsApp, Telegram, Teams e Web Push).",
+    "type": "glpi-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "João Pedro Castor Quirino"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "suggest": {
+        "minishlink/web-push": "OPCIONAL — só se quiser ativar o canal Web Push (notificação no navegador). Instale com: composer require minishlink/web-push",
+        "ext-gmp": "Acelera a assinatura VAPID do Web Push (alternativa: ext-bcmath)",
+        "ext-bcmath": "Fallback de cálculo para a assinatura VAPID quando não há ext-gmp"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

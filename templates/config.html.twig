@@ -1,0 +1,81 @@
+{#
+ # Tela de configuração das APIs — CONTROLE DE CONTRATOS.
+ # Todos os campos gravam na tabela glpi_plugin_controlecontratos_configs.
+ # O token CSRF (_glpi_csrf_token) é adicionado automaticamente por Html::hidden.
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form name="form_config" method="post" action="{{ target }}" data-submit-once>
+   <input type="hidden" name="id" value="{{ config.fields['id'] }}">
+
+   <div class="card">
+      <div class="card-header">
+         <h3 class="card-title">
+            <i class="ti ti-settings me-2"></i>
+            {{ __('Configuração de Integrações — CONTROLE DE CONTRATOS', 'controlecontratos') }}
+         </h3>
+      </div>
+
+      <div class="card-body">
+         {# ===================== WhatsApp / Evolution API ===================== #}
+         <h4 class="mt-2"><i class="ti ti-brand-whatsapp text-green me-1"></i> {{ __('WhatsApp (Evolution API)', 'controlecontratos') }}</h4>
+         <div class="row">
+            {{ fields.textField('evolution_url', config.fields['evolution_url'], __('URL da Evolution API', 'controlecontratos'), {
+               'helper': 'https://sua-evolution.dominio.com'
+            }) }}
+            {{ fields.textField('evolution_instance', config.fields['evolution_instance'], __('Nome da instância', 'controlecontratos')) }}
+         </div>
+         <div class="row">
+            {{ fields.passwordField('evolution_apikey', config.fields['evolution_apikey'], __('API Key', 'controlecontratos')) }}
+         </div>
+
+         <hr>
+
+         {# ===================== Telegram ===================== #}
+         <h4 class="mt-2"><i class="ti ti-brand-telegram text-blue me-1"></i> {{ __('Telegram', 'controlecontratos') }}</h4>
+         <div class="row">
+            {{ fields.passwordField('telegram_token', config.fields['telegram_token'], __('Bot Token', 'controlecontratos')) }}
+            {{ fields.textField('telegram_chatid', config.fields['telegram_chatid'], __('Chat ID padrão', 'controlecontratos')) }}
+         </div>
+
+         <hr>
+
+         {# ===================== Microsoft Teams ===================== #}
+         <h4 class="mt-2"><i class="ti ti-brand-teams text-indigo me-1"></i> {{ __('Microsoft Teams', 'controlecontratos') }}</h4>
+         <div class="row">
+            {{ fields.textareaField('teams_webhook', config.fields['teams_webhook'], __('URL do Incoming Webhook', 'controlecontratos'), {
+               'helper': __('Cole a URL gerada pelo conector "Incoming Webhook" do canal do Teams.', 'controlecontratos')
+            }) }}
+         </div>
+
+         <hr>
+
+         {# ===================== Web Push (VAPID) ===================== #}
+         <h4 class="mt-2"><i class="ti ti-bell-ringing text-orange me-1"></i> {{ __('Web Push (Navegador / VAPID)', 'controlecontratos') }}</h4>
+         <div class="row">
+            {{ fields.textareaField('vapid_public_key', config.fields['vapid_public_key'], __('VAPID Public Key', 'controlecontratos')) }}
+            {{ fields.textareaField('vapid_private_key', config.fields['vapid_private_key'], __('VAPID Private Key', 'controlecontratos')) }}
+         </div>
+         <div class="row">
+            {{ fields.textField('vapid_subject', config.fields['vapid_subject'], __('VAPID Subject (mailto:)', 'controlecontratos'), {
+               'helper': 'mailto:admin@suaempresa.com'
+            }) }}
+         </div>
+
+         <div class="row">
+            {{ fields.sliderField('is_active', config.fields['is_active'], __('Integrações ativas', 'controlecontratos')) }}
+         </div>
+      </div>
+
+      <div class="card-footer text-end">
+         {# Token CSRF nativo do GLPI — obrigatório em todo POST que altera dados #}
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+         <button type="submit" name="update" class="btn btn-primary">
+            <i class="ti ti-device-floppy me-1"></i> {{ _x('button', 'Save') }}
+         </button>
+         <button type="submit" name="test_channels" class="btn btn-outline-secondary ms-2">
+            <i class="ti ti-send me-1"></i> {{ __('Enviar teste', 'controlecontratos') }}
+         </button>
+      </div>
+   </div>
+</form>

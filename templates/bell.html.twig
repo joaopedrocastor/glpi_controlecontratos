@@ -1,0 +1,40 @@
+{#
+ # Sino de notificações da navbar — CONTROLE DE CONTRATOS.
+ # Injetado via hook display_header. Badge numérico + dropdown de vencimentos.
+ #}
+<div class="dropdown me-2 controlecontratos-bell">
+   <a href="#" class="nav-link px-2" data-bs-toggle="dropdown" aria-label="{{ __('Contratos a vencer', 'controlecontratos') }}" title="{{ __('Contratos a vencer', 'controlecontratos') }}">
+      <i class="ti ti-bell fs-2"></i>
+      {% if count > 0 %}
+         <span class="badge bg-red text-white position-absolute top-0 start-100 translate-middle badge-pill">{{ count }}</span>
+      {% endif %}
+   </a>
+   <div class="dropdown-menu dropdown-menu-end dropdown-menu-card" style="min-width: 22rem;">
+      <div class="card">
+         <div class="card-header">
+            <h3 class="card-title">
+               <i class="ti ti-alarm me-1"></i>{{ __('Contratos próximos do término', 'controlecontratos') }}
+            </h3>
+         </div>
+         <div class="list-group list-group-flush" style="max-height: 360px; overflow-y: auto;">
+            {% for row in contracts %}
+               <a class="list-group-item list-group-item-action" href="{{ form_url }}?id={{ row.id }}">
+                  <div class="d-flex align-items-center">
+                     <div class="me-2">{{ row.kind_badge|raw }}</div>
+                     <div class="flex-fill">
+                        <div class="fw-bold">{{ row.name }}</div>
+                        <div class="text-secondary small">
+                           {{ row.partner }} — {{ __('vence em', 'controlecontratos') }} {{ row.date_end|date('d/m/Y') }}
+                        </div>
+                     </div>
+                  </div>
+               </a>
+            {% else %}
+               <div class="list-group-item text-center text-secondary">
+                  {{ __('Nenhum contrato a vencer nos próximos 30 dias.', 'controlecontratos') }}
+               </div>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
+</div>

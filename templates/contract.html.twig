@@ -1,0 +1,63 @@
+{#
+ # Formulário do Contrato/Licença — CONTROLE DE CONTRATOS.
+ # Estende o layout genérico do GLPI 10: herda <form>, token CSRF
+ # (_glpi_csrf_token) e os botões salvar/excluir automaticamente.
+ #}
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Sobrescreve o bloco de campos do formulário genérico #}
+{% block more_fields %}
+   <div class="row">
+      {{ fields.textField('name', item.fields['name'], __('Nome', 'controlecontratos'), {
+         'required': true
+      }) }}
+
+      {# Seletor Contrato x Licença — diferenciação visual #}
+      {% set kind_options = {} %}
+      {% for key, data in kind_list %}
+         {% set kind_options = kind_options|merge({(key): data.label}) %}
+      {% endfor %}
+      {{ fields.dropdownArrayField('kind', item.fields['kind'], kind_options, __('Tipo', 'controlecontratos'), {
+         'required': true
+      }) }}
+   </div>
+
+   <div class="row">
+      {{ fields.textField('partner', item.fields['partner'], __('Fornecedor / Cliente', 'controlecontratos')) }}
+
+      {{ fields.dropdownField(
+         'Supplier',
+         'suppliers_id',
+         item.fields['suppliers_id'],
+         _n('Supplier', 'Suppliers', 1)
+      ) }}
+   </div>
+
+   <div class="row">
+      {{ fields.dateField('date_begin', item.fields['date_begin'], __('Data de início', 'controlecontratos')) }}
+      {{ fields.dateField('date_end', item.fields['date_end'], __('Data de término', 'controlecontratos'), {
+         'required': true
+      }) }}
+   </div>
+
+   <div class="row">
+      {{ fields.numberField('value', item.fields['value'], __('Valor (R$)', 'controlecontratos'), {
+         'step': '0.01'
+      }) }}
+
+      {{ fields.dropdownArrayField('status', item.fields['status'], status_list, __('Status', 'controlecontratos')) }}
+   </div>
+
+   <div class="row">
+      {{ fields.numberField('alert_days', item.fields['alert_days']|default(30), __('Alertar com antecedência (dias)', 'controlecontratos'), {
+         'min': 1,
+         'max': 365,
+         'helper': __('Nº de dias antes do término em que o alerta será disparado.', 'controlecontratos')
+      }) }}
+   </div>
+
+   <div class="row">
+      {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', 1)) }}
+   </div>
+{% endblock %}

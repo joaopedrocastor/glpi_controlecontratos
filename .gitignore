@@ -1,0 +1,17 @@
+# Dependências do Composer (Web Push é opcional e instalado no servidor)
+/vendor/
+composer.lock
+
+# Traduções compiladas
+*.mo
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Arquivos temporários
+*.tmp
+*.bak
