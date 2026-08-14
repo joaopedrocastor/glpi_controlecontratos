@@ -13,21 +13,33 @@ $pref = new PluginControlecontratosNotificationpref();
 if (isset($_POST['update'])) {
     Session::checkCSRF($_POST);
 
-    // Um usuário só edita a própria preferência (a menos que seja admin).
-    $users_id = (int) ($_POST['users_id'] ?? Session::getLoginUserID());
-    if ($users_id !== (int) Session::getLoginUserID()
-        && !Session::haveRight('plugin_controlecontratos_contract', UPDATE)
-    ) {
+    $current = (int) Session::getLoginUserID();
+    $isAdmin = Session::haveRight('plugin_controlecontratos_contract', UPDATE);
+
+    // Um usuário comum só edita a própria preferência; admin pode editar de outro.
+    $target = (int) ($_POST['users_id'] ?? $current);
+    if ($target !== $current && !$isAdmin) {
         Html::displayRightError();
+        exit;
     }
 
-    // Normaliza os toggles ausentes como 0.
+    // Resolve o registro pelo usuário-alvo (evita IDOR via campo 'id' forjado).
+    $pref = PluginControlecontratosNotificationpref::getForUser($target);
+
+    // Só os campos permitidos são gravados (allowlist) — ignora 'id'/'users_id' forjados.
+    $input = [
+        'id'       => $pref->getID(),
+        'users_id' => $target,
+        'date_mod' => $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s'),
+    ];
     foreach (['use_whatsapp', 'use_telegram', 'use_teams', 'use_webpush'] as $ch) {
-        $_POST[$ch] = isset($_POST[$ch]) ? (int) $_POST[$ch] : 0;
+        $input[$ch] = isset($_POST[$ch]) ? (int) $_POST[$ch] : 0;
     }
-    $_POST['date_mod'] = $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s');
+    if (isset($_POST['whatsapp_number'])) {
+        $input['whatsapp_number'] = preg_replace('/\D+/', '', (string) $_POST['whatsapp_number']);
+    }
 
-    $pref->update($_POST);
+    $pref->update($input);
     Session::addMessageAfterRedirect(__('Preferências salvas.', 'controlecontratos'));
 }
 
