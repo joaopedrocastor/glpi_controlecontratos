@@ -37,7 +37,6 @@ function plugin_init_controlecontratos()
     if (Session::getLoginUserID()) {
         $PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]['controlecontratos'] = [
             'js/webpush.js',
-            'js/bell.js',
         ];
         $PLUGIN_HOOKS[Hooks::ADD_CSS]['controlecontratos'] = [
             'css/controlecontratos.css',

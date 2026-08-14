@@ -1,22 +1,21 @@
 {#
  # Sino de notificações — CONTROLE DE CONTRATOS.
- # Widget flutuante fixo (não depende do CSS da navbar). Injetado via display_central.
- # A lógica de abrir/fechar está em js/bell.js (evita bloqueio de CSP em <script> inline).
+ # Usa <details>/<summary> nativo do HTML: abre/fecha no clique SEM JavaScript.
+ # Widget flutuante fixo, injetado via display_central.
  #}
-<div id="cc-bell" style="position:fixed; bottom:20px; right:20px; z-index:1055;">
-   <button type="button" id="cc-bell-btn"
-           class="btn btn-primary rounded-circle shadow"
-           style="width:54px; height:54px; padding:0; position:relative;"
-           title="{{ __('Contratos próximos do término', 'controlecontratos') }}">
+<details id="cc-bell" style="position:fixed; bottom:20px; right:20px; z-index:1055;">
+   <summary class="btn btn-primary shadow"
+            style="width:54px; height:54px; border-radius:50%; display:flex; align-items:center;
+                   justify-content:center; cursor:pointer; position:relative; list-style:none;"
+            title="{{ __('Contratos próximos do término', 'controlecontratos') }}">
       <i class="ti ti-bell" style="font-size:1.5rem;"></i>
       {% if count > 0 %}
          <span class="badge bg-red"
                style="position:absolute; top:-4px; right:-4px; border-radius:10px;">{{ count }}</span>
       {% endif %}
-   </button>
+   </summary>
 
-   <div id="cc-bell-panel"
-        style="display:none; position:absolute; bottom:64px; right:0; width:340px; max-width:92vw;
+   <div style="position:absolute; bottom:64px; right:0; width:340px; max-width:92vw;
                max-height:60vh; overflow-y:auto; background:var(--tblr-bg-surface, #fff);
                color:var(--tblr-body-color, #182433); border:1px solid var(--tblr-border-color, #dbe0e5);
                border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.22);">
@@ -41,4 +40,4 @@
          </div>
       {% endfor %}
    </div>
-</div>
+</details>

@@ -17,3 +17,12 @@
 .controlecontratos-expired td {
     background-color: rgba(214, 57, 57, 0.06);
 }
+
+/* Sino flutuante — remove o marcador/triângulo padrão do <details> */
+#cc-bell > summary {
+    list-style: none;
+}
+#cc-bell > summary::-webkit-details-marker,
+#cc-bell > summary::marker {
+    display: none;
+}
