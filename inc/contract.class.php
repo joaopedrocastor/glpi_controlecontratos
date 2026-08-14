@@ -436,6 +436,18 @@ class PluginControlecontratosContract extends CommonDBTM
             );
             return false;
         }
+
+        // Normaliza o Valor: aceita "1.234,56" ou "1234.56" e grava como decimal.
+        if (isset($input['value']) && $input['value'] !== '') {
+            $raw = trim((string) $input['value']);
+            // Remove separador de milhar "." e troca vírgula decimal por ponto.
+            if (strpos($raw, ',') !== false) {
+                $raw = str_replace('.', '', $raw);
+                $raw = str_replace(',', '.', $raw);
+            }
+            $input['value'] = (float) preg_replace('/[^0-9.\-]/', '', $raw);
+        }
+
         return $input;
     }
 }

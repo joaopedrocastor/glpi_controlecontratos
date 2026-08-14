@@ -20,11 +20,13 @@
          'required': true
       }) }}
 
-      {{ fields.textField('partner', item.fields['partner'], __('Fornecedor / Cliente', 'controlecontratos')) }}
+      {{ fields.textField('partner', item.fields['partner'], __('Fornecedor', 'controlecontratos')) }}
    </div>
 
    <div class="row">
-      {{ fields.dateField('date_begin', item.fields['date_begin'], __('Data de início', 'controlecontratos')) }}
+      {{ fields.dateField('date_begin', item.fields['date_begin'], __('Data de início', 'controlecontratos'), {
+         'required': true
+      }) }}
       {{ fields.dateField('date_end', item.fields['date_end'], __('Data de término', 'controlecontratos'), {
          'required': true
       }) }}
@@ -38,9 +40,7 @@
    </div>
 
    <div class="row">
-      {{ fields.numberField('value', item.fields['value'], __('Valor (R$)', 'controlecontratos'), {
-         'step': '0.01'
-      }) }}
+      {{ fields.textField('value', item.fields['value'], __('Valor (R$)', 'controlecontratos')) }}
 
       {# Aviso de término — antecedência em meses (armazenado em dias) #}
       {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos')) }}
