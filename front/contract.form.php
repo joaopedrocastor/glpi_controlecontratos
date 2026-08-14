@@ -32,7 +32,7 @@ if (isset($_POST['add'])) {
     Html::header(
         PluginControlecontratosContract::getTypeName(1),
         $_SERVER['PHP_SELF'],
-        'assets',
+        'management',
         'PluginControlecontratosMenu',
         'contract'
     );

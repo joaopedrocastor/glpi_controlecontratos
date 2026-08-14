@@ -11,7 +11,7 @@ Session::checkRight('plugin_controlecontratos_contract', READ);
 Html::header(
     PluginControlecontratosContract::getTypeName(2),
     $_SERVER['PHP_SELF'],
-    'assets',
+    'management',
     'PluginControlecontratosMenu',
     'contract'
 );

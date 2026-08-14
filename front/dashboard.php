@@ -11,7 +11,7 @@ Session::checkRight('plugin_controlecontratos_contract', READ);
 Html::header(
     __('Dashboard — CONTROLE DE CONTRATOS', 'controlecontratos'),
     $_SERVER['PHP_SELF'],
-    'assets',
+    'management',
     'PluginControlecontratosMenu',
     'dashboard'
 );

@@ -45,9 +45,9 @@ function plugin_init_controlecontratos()
         // Injeta o "Sino" de notificações (renderizado na página central).
         $PLUGIN_HOOKS[Hooks::DISPLAY_CENTRAL]['controlecontratos'] = 'plugin_controlecontratos_display_header';
 
-        // Menu principal do plugin (Ativos > CONTROLE DE CONTRATOS).
+        // Menu principal do plugin (Gerência > Controle Contratos).
         $PLUGIN_HOOKS['menu_toadd']['controlecontratos'] = [
-            'assets' => 'PluginControlecontratosMenu',
+            'management' => 'PluginControlecontratosMenu',
         ];
 
         // Página de configuração acessível via Configurar > Plugins.
@@ -71,7 +71,7 @@ function plugin_init_controlecontratos()
 function plugin_version_controlecontratos()
 {
     return [
-        'name'           => 'CONTROLE DE CONTRATOS',
+        'name'           => 'Controle Contratos',
         'version'        => PLUGIN_CONTROLECONTRATOS_VERSION,
         'author'         => 'João Pedro Castor Quirino',
         'license'        => 'GPLv2+',

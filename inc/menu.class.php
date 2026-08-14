@@ -15,7 +15,7 @@ class PluginControlecontratosMenu extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
     {
-        return __('CONTROLE DE CONTRATOS', 'controlecontratos');
+        return __('Controle Contratos', 'controlecontratos');
     }
 
     public static function getIcon()
