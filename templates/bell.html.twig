@@ -1,16 +1,43 @@
 {#
  # Sino de notificações — CONTROLE DE CONTRATOS.
- # Botão flutuante fixo. Clicar dispensa o sino (some até o próximo login).
- # Injetado via display_central; a contagem vem dos contratos vencendo em 30 dias.
+ # Usa <details>/<summary> nativo do HTML: abre/fecha no clique SEM JavaScript.
+ # Aparece enquanto houver contratos/licenças vencendo nos próximos 30 dias.
  #}
-<a id="cc-bell" href="{{ dismiss_url }}"
-   class="btn btn-primary shadow"
-   style="position:fixed; bottom:20px; right:20px; z-index:1055; width:54px; height:54px;
-          border-radius:50%; display:flex; align-items:center; justify-content:center;"
-   title="{{ __('Contratos/Licenças vencendo — clique para dispensar', 'controlecontratos') }}">
-   <i class="ti ti-bell" style="font-size:1.5rem;"></i>
-   {% if count > 0 %}
-      <span class="badge bg-red"
-            style="position:absolute; top:-4px; right:-4px; border-radius:10px;">{{ count }}</span>
-   {% endif %}
-</a>
+<details id="cc-bell" style="position:fixed; bottom:20px; right:20px; z-index:1055;">
+   <summary class="btn btn-primary shadow"
+            style="width:54px; height:54px; border-radius:50%; display:flex; align-items:center;
+                   justify-content:center; cursor:pointer; position:relative; list-style:none;"
+            title="{{ __('Contratos/Licenças Vencendo', 'controlecontratos') }}">
+      <i class="ti ti-bell" style="font-size:1.5rem;"></i>
+      {% if count > 0 %}
+         <span class="badge bg-red"
+               style="position:absolute; top:-4px; right:-4px; border-radius:10px;">{{ count }}</span>
+      {% endif %}
+   </summary>
+
+   <div style="position:absolute; bottom:64px; right:0; width:340px; max-width:92vw;
+               max-height:60vh; overflow-y:auto; background:var(--tblr-bg-surface, #fff);
+               color:var(--tblr-body-color, #182433); border:1px solid var(--tblr-border-color, #dbe0e5);
+               border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.22);">
+
+      <div style="padding:.65rem .85rem; font-weight:600; border-bottom:1px solid var(--tblr-border-color, #eef0f2);">
+         <i class="ti ti-alarm me-1"></i>{{ __('Contratos/Licenças Vencendo', 'controlecontratos') }}
+      </div>
+
+      {% for row in contracts %}
+         <a href="{{ form_url }}?id={{ row.id }}"
+            style="display:block; padding:.65rem .85rem; text-decoration:none; color:inherit; white-space:normal;
+                   border-bottom:1px solid var(--tblr-border-color, #f3f4f6);">
+            <div style="margin-bottom:2px;">{{ row.kind_badge|raw }}</div>
+            <div style="font-weight:600;">{{ row.name }}</div>
+            <div class="text-secondary" style="font-size:.82rem;">
+               {{ row.partner }} — {{ __('vence em', 'controlecontratos') }} {{ row.date_end|date('d/m/Y') }}
+            </div>
+         </a>
+      {% else %}
+         <div class="text-secondary" style="padding:.9rem; text-align:center;">
+            {{ __('Nenhum contrato a vencer nos próximos 30 dias.', 'controlecontratos') }}
+         </div>
+      {% endfor %}
+   </div>
+</details>
