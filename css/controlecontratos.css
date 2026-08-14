@@ -26,3 +26,22 @@
 #cc-bell > summary::marker {
     display: none;
 }
+
+/* Animação de "balançar" — chama atenção enquanto o sino está fechado.
+   Para automaticamente quando o usuário abre o painel ([open]). */
+@keyframes cc-bell-shake {
+    0%, 65%, 100% { transform: rotate(0); }
+    70% { transform: rotate(-14deg); }
+    75% { transform: rotate(12deg); }
+    80% { transform: rotate(-10deg); }
+    85% { transform: rotate(8deg); }
+    90% { transform: rotate(-4deg); }
+    95% { transform: rotate(2deg); }
+}
+#cc-bell > summary i {
+    display: inline-block;
+    transform-origin: 50% 3px;
+}
+#cc-bell:not([open]) > summary i {
+    animation: cc-bell-shake 2s ease-in-out infinite;
+}
