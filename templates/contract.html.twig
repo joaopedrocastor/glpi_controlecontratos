@@ -31,18 +31,23 @@
    </div>
 
    <div class="row">
-      {{ fields.numberField('value', item.fields['value'], __('Valor (R$)', 'controlecontratos'), {
-         'step': '0.01'
-      }) }}
+      {# Periodicidade/duração do contrato (em meses) — como no módulo nativo #}
+      {{ fields.dropdownArrayField('periodicity', item.fields['periodicity']|default(12), period_list, __('Periodicidade do contrato', 'controlecontratos')) }}
 
       {{ fields.dropdownArrayField('status', item.fields['status'], status_list, __('Status', 'controlecontratos')) }}
    </div>
 
    <div class="row">
-      {{ fields.numberField('alert_days', item.fields['alert_days']|default(30), __('Alertar com antecedência (dias)', 'controlecontratos'), {
-         'min': 1,
-         'max': 365,
-         'helper': __('Nº de dias antes do término em que o alerta será disparado.', 'controlecontratos')
+      {{ fields.numberField('value', item.fields['value'], __('Valor (R$)', 'controlecontratos'), {
+         'step': '0.01'
       }) }}
+
+      {# Aviso de término — antecedência em meses (armazenado em dias) #}
+      {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos')) }}
+   </div>
+
+   <div class="row">
+      {# Avisos por e-mail (além de WhatsApp/Telegram/Teams/Web Push) #}
+      {{ fields.sliderField('email_alert', item.fields['email_alert']|default(0), __('Avisos por e-mail', 'controlecontratos')) }}
    </div>
 {% endblock %}

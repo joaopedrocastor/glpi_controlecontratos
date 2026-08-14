@@ -12,7 +12,7 @@
 
 use Glpi\Plugin\Hooks;
 
-define('PLUGIN_CONTROLECONTRATOS_VERSION', '1.0.0');
+define('PLUGIN_CONTROLECONTRATOS_VERSION', '1.1.0');
 
 // Versão mínima e máxima do GLPI suportada (foco exclusivo no 10.0.11+).
 define('PLUGIN_CONTROLECONTRATOS_MIN_GLPI', '10.0.11');

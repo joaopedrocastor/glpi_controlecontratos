@@ -183,6 +183,17 @@ class PluginControlecontratosCron extends CommonDBTM
             $count += $ok ? 1 : 0;
         }
 
+        // 5) E-MAIL — se o contrato tiver "Avisos por e-mail" ligado, envia
+        //    ao usuário responsável (respeita a configuração de SMTP do GLPI).
+        if (!empty($contract['email_alert']) && !empty($contract['users_id'])) {
+            $ok = PluginControlecontratosNotifier::sendEmail(
+                (int) $contract['users_id'],
+                sprintf(__('Contrato %s: %s', 'controlecontratos'), $situacao, $contract['name']),
+                strip_tags(str_replace(['*'], [''], $plain))
+            );
+            $count += $ok ? 1 : 0;
+        }
+
         return $count;
     }
 

@@ -41,7 +41,9 @@ function plugin_controlecontratos_install()
             `date_end`         date DEFAULT NULL,
             `value`            decimal(20,4) NOT NULL DEFAULT '0.0000',
             `status`           varchar(50) NOT NULL DEFAULT 'active' COMMENT 'active|expired|canceled|renewed',
-            `alert_days`       int NOT NULL DEFAULT '30' COMMENT 'Dias de antecedência para alerta',
+            `periodicity`      int NOT NULL DEFAULT '12' COMMENT 'Periodicidade/duração do contrato em meses',
+            `alert_days`       int NOT NULL DEFAULT '90' COMMENT 'Antecedência do aviso de término, em dias',
+            `email_alert`      tinyint NOT NULL DEFAULT '0' COMMENT 'Enviar também aviso por e-mail',
             `last_alert_date`  timestamp NULL DEFAULT NULL,
             `comment`          text,
             `users_id`         int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -60,6 +62,20 @@ function plugin_controlecontratos_install()
             KEY `suppliers_id` (`suppliers_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
         $DB->doQueryOrDie($query, $DB->error());
+    }
+
+    // ---------------------------------------------------------------------
+    // 1b) Migração idempotente — adiciona colunas novas em instalações antigas.
+    //     Roda com segurança tanto na 1ª instalação quanto no "Atualizar".
+    // ---------------------------------------------------------------------
+    $migrations = [
+        'periodicity' => "ALTER TABLE `$table` ADD COLUMN `periodicity` int NOT NULL DEFAULT '12' COMMENT 'Periodicidade/duração do contrato em meses' AFTER `status`",
+        'email_alert' => "ALTER TABLE `$table` ADD COLUMN `email_alert` tinyint NOT NULL DEFAULT '0' COMMENT 'Enviar também aviso por e-mail' AFTER `alert_days`",
+    ];
+    foreach ($migrations as $field => $alter) {
+        if (!$DB->fieldExists($table, $field)) {
+            $DB->doQueryOrDie($alter, $DB->error());
+        }
     }
 
     // ---------------------------------------------------------------------

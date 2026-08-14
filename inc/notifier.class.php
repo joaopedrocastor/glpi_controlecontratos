@@ -176,6 +176,43 @@ class PluginControlecontratosNotifier
     }
 
     // ---------------------------------------------------------------------
+    // E-MAIL — usa o mailer nativo do GLPI (respeita a config de SMTP).
+    // ---------------------------------------------------------------------
+    /**
+     * @param int    $users_id Destinatário (usuário responsável pelo contrato).
+     * @param string $subject
+     * @param string $body     Texto simples.
+     * @return bool
+     */
+    public static function sendEmail($users_id, $subject, $body)
+    {
+        if (!class_exists('GLPIMailer')) {
+            return false;
+        }
+
+        $user = new User();
+        if (!$user->getFromDB($users_id)) {
+            return false;
+        }
+        $address = $user->getDefaultEmail();
+        if (empty($address)) {
+            return false;
+        }
+
+        try {
+            $mailer = new GLPIMailer();
+            $mailer->getEmail()
+                ->to($address)
+                ->subject($subject)
+                ->text($body);
+            return (bool) $mailer->send();
+        } catch (\Throwable $e) {
+            Toolbox::logInFile('controlecontratos', 'Falha no envio de e-mail: ' . $e->getMessage() . "\n");
+            return false;
+        }
+    }
+
+    // ---------------------------------------------------------------------
     // WEB PUSH — entrega às assinaturas do navegador.
     // Requer a lib web-push (minishlink/web-push) via composer para a
     // assinatura VAPID. Aqui delegamos à classe dedicada.

@@ -91,6 +91,8 @@ class PluginControlecontratosContract extends CommonDBTM
             'params'        => $options,
             'status_list'   => self::getStatusArray(),
             'kind_list'     => self::getKindArray(),
+            'alert_list'    => self::getAlertOptions(),
+            'period_list'   => self::getPeriodicityOptions(),
         ]);
 
         return true;
@@ -131,6 +133,39 @@ class PluginControlecontratosContract extends CommonDBTM
         $k     = $kinds[$kind] ?? $kinds['contract'];
         return "<span class='badge {$k['color']}'><i class='{$k['icon']} me-1'></i>"
             . htmlspecialchars($k['label']) . "</span>";
+    }
+
+    /**
+     * Opções do "Aviso de término" — antecedência em meses (valor guardado em dias).
+     * Espelha o campo nativo de Aviso do módulo de Contratos do GLPI.
+     *
+     * @return array<int,string> [dias => rótulo]
+     */
+    public static function getAlertOptions()
+    {
+        return [
+            0   => __('Não avisar', 'controlecontratos'),
+            30  => __('1 mês (30 dias)', 'controlecontratos'),
+            60  => __('2 meses (60 dias)', 'controlecontratos'),
+            90  => __('3 meses (90 dias)', 'controlecontratos'),
+            120 => __('4 meses (120 dias)', 'controlecontratos'),
+            180 => __('6 meses (180 dias)', 'controlecontratos'),
+            365 => __('12 meses (365 dias)', 'controlecontratos'),
+        ];
+    }
+
+    /**
+     * Opções de Periodicidade/duração do contrato (em meses).
+     *
+     * @return array<int,string>
+     */
+    public static function getPeriodicityOptions()
+    {
+        $opts = [0 => __('Indeterminada', 'controlecontratos')];
+        foreach ([1, 3, 6, 12, 24, 36, 48, 60] as $m) {
+            $opts[$m] = sprintf(_n('%d mês', '%d meses', $m, 'controlecontratos'), $m);
+        }
+        return $opts;
     }
 
     /**
