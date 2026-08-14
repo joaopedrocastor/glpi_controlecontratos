@@ -22,7 +22,7 @@ class PluginControlecontratosContract extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Contrato', 'Contratos', $nb, 'controlecontratos');
+        return _n('Contrato / Licença', 'Contratos / Licenças', $nb, 'controlecontratos');
     }
 
     /**

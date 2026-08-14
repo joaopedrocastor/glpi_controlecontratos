@@ -6,13 +6,11 @@
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{# Sobrescreve o bloco de campos do formulário genérico #}
+{# Sobrescreve o bloco de campos do formulário genérico.
+ # OBS: Nome, Usuário e Comentários já são renderizados pelo formulário-base
+ # do GLPI (parte de cima), por isso NÃO são repetidos aqui. #}
 {% block more_fields %}
    <div class="row">
-      {{ fields.textField('name', item.fields['name'], __('Nome', 'controlecontratos'), {
-         'required': true
-      }) }}
-
       {# Seletor Contrato x Licença — diferenciação visual #}
       {% set kind_options = {} %}
       {% for key, data in kind_list %}
@@ -21,17 +19,8 @@
       {{ fields.dropdownArrayField('kind', item.fields['kind'], kind_options, __('Tipo', 'controlecontratos'), {
          'required': true
       }) }}
-   </div>
 
-   <div class="row">
       {{ fields.textField('partner', item.fields['partner'], __('Fornecedor / Cliente', 'controlecontratos')) }}
-
-      {{ fields.dropdownField(
-         'Supplier',
-         'suppliers_id',
-         item.fields['suppliers_id'],
-         _n('Supplier', 'Suppliers', 1)
-      ) }}
    </div>
 
    <div class="row">
@@ -55,9 +44,5 @@
          'max': 365,
          'helper': __('Nº de dias antes do término em que o alerta será disparado.', 'controlecontratos')
       }) }}
-   </div>
-
-   <div class="row">
-      {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', 1)) }}
    </div>
 {% endblock %}
