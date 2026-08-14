@@ -283,11 +283,12 @@ class PluginControlecontratosContract extends CommonDBTM
      * Consulta reutilizável: contratos cujo término cai dentro de X dias
      * (ou já vencidos, se $onlyExpired). Base para o Dashboard, Sino e Cron.
      *
-     * @param int  $days        Janela em dias (a partir de hoje).
-     * @param bool $onlyExpired Se true, retorna apenas os já vencidos.
+     * @param int         $days        Janela em dias (a partir de hoje).
+     * @param bool        $onlyExpired Se true, retorna apenas os já vencidos.
+     * @param string|null $kind        Filtra por tipo ('contract'|'license') ou null p/ todos.
      * @return array Linhas de contratos.
      */
-    public static function getExpiringContracts($days = 30, $onlyExpired = false)
+    public static function getExpiringContracts($days = 30, $onlyExpired = false, $kind = null)
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -299,6 +300,10 @@ class PluginControlecontratosContract extends CommonDBTM
             'is_deleted' => 0,
             'status'     => 'active',
         ] + getEntitiesRestrictCriteria(self::getTable());
+
+        if ($kind !== null) {
+            $where['kind'] = $kind;
+        }
 
         if ($onlyExpired) {
             $where['date_end'] = ['<', $today];
@@ -323,14 +328,18 @@ class PluginControlecontratosContract extends CommonDBTM
      *
      * @return array{active:int, next30:int, next60:int, expired:int}
      */
-    public static function getDashboardStats()
+    public static function getDashboardStats($kind = null)
     {
         /** @var DBmysql $DB */
         global $DB;
 
-        $today = date('Y-m-d');
-        $base  = ['is_deleted' => 0] + getEntitiesRestrictCriteria(self::getTable());
+        $baseNoKind = ['is_deleted' => 0] + getEntitiesRestrictCriteria(self::getTable());
+        $base       = $baseNoKind;
+        if ($kind !== null) {
+            $base['kind'] = $kind;
+        }
 
+        // Contador que respeita o filtro de tipo ativo.
         $count = function (array $extra) use ($DB, $base) {
             return (int) ($DB->request([
                 'COUNT' => 'cpt',
@@ -338,12 +347,22 @@ class PluginControlecontratosContract extends CommonDBTM
                 'WHERE' => $base + $extra,
             ])->current()['cpt'] ?? 0);
         };
+        // Contador do total por tipo (ignora o filtro ativo, p/ mostrar sempre o total de cada).
+        $countAll = function (array $extra) use ($DB, $baseNoKind) {
+            return (int) ($DB->request([
+                'COUNT' => 'cpt',
+                'FROM'  => self::getTable(),
+                'WHERE' => $baseNoKind + $extra,
+            ])->current()['cpt'] ?? 0);
+        };
 
         return [
-            'active'  => $count(['status' => 'active']),
-            'next30'  => count(self::getExpiringContracts(30)),
-            'next60'  => count(self::getExpiringContracts(60)),
-            'expired' => count(self::getExpiringContracts(0, true)),
+            'active'    => $count(['status' => 'active']),
+            'next30'    => count(self::getExpiringContracts(30, false, $kind)),
+            'next60'    => count(self::getExpiringContracts(60, false, $kind)),
+            'expired'   => count(self::getExpiringContracts(0, true, $kind)),
+            'contracts' => $countAll(['kind' => 'contract']),
+            'licenses'  => $countAll(['kind' => 'license']),
         ];
     }
 

@@ -11,20 +11,49 @@
       </div>
    </div>
 
-   {# Filtros rápidos por tipo — levam à lista já filtrada #}
+   {# Filtros por tipo — recarregam o PRÓPRIO Dashboard filtrado (o ativo fica destacado) #}
    <div class="mb-3">
-      <a href="{{ list_url }}?reset=reset" class="btn btn-sm btn-outline-secondary me-1">
-         <i class="ti ti-list me-1"></i>{{ __('Ver todos', 'controlecontratos') }}
+      <a href="{{ dash_all }}" class="btn btn-sm me-1 {{ active_kind is null ? 'btn-secondary' : 'btn-outline-secondary' }}">
+         <i class="ti ti-list me-1"></i>{{ __('Todos', 'controlecontratos') }}
       </a>
-      <a href="{{ contract_url }}" class="btn btn-sm btn-primary me-1">
+      <a href="{{ dash_contract }}" class="btn btn-sm me-1 {{ active_kind == 'contract' ? 'btn-primary' : 'btn-outline-primary' }}">
          <i class="ti ti-file-certificate me-1"></i>{{ __('Contratos', 'controlecontratos') }}
       </a>
-      <a href="{{ license_url }}" class="btn btn-sm text-white" style="background-color:#ae3ec9">
+      <a href="{{ dash_license }}" class="btn btn-sm text-white"
+         style="background-color:{{ active_kind == 'license' ? '#ae3ec9' : '#c98fd9' }}">
          <i class="ti ti-license me-1"></i>{{ __('Licenças', 'controlecontratos') }}
       </a>
    </div>
 
    <div class="row row-cards mb-4">
+      {# Total de Contratos #}
+      <div class="col-sm-6 col-lg-3">
+         <div class="card card-sm">
+            <div class="card-body">
+               <div class="row align-items-center">
+                  <div class="col-auto"><span class="bg-blue text-white avatar"><i class="ti ti-file-certificate"></i></span></div>
+                  <div class="col">
+                     <div class="font-weight-medium h1 mb-0">{{ stats.contracts }}</div>
+                     <div class="text-secondary">{{ __('Contratos', 'controlecontratos') }}</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      {# Total de Licenças #}
+      <div class="col-sm-6 col-lg-3">
+         <div class="card card-sm">
+            <div class="card-body">
+               <div class="row align-items-center">
+                  <div class="col-auto"><span class="text-white avatar" style="background-color:#ae3ec9"><i class="ti ti-license"></i></span></div>
+                  <div class="col">
+                     <div class="font-weight-medium h1 mb-0">{{ stats.licenses }}</div>
+                     <div class="text-secondary">{{ __('Licenças', 'controlecontratos') }}</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
       {# Ativos #}
       <div class="col-sm-6 col-lg-3">
          <div class="card card-sm">

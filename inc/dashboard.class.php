@@ -26,8 +26,14 @@ class PluginControlecontratosDashboard extends CommonGLPI
      */
     public static function show()
     {
-        $stats     = PluginControlecontratosContract::getDashboardStats();
-        $expiring  = PluginControlecontratosContract::getExpiringContracts(60);
+        // Filtro por tipo vindo da URL (?kind=contract|license). null = todos.
+        $kind = $_GET['kind'] ?? null;
+        if (!in_array($kind, ['contract', 'license'], true)) {
+            $kind = null;
+        }
+
+        $stats     = PluginControlecontratosContract::getDashboardStats($kind);
+        $expiring  = PluginControlecontratosContract::getExpiringContracts(60, false, $kind);
 
         // Anexa o badge de status a cada linha para o template.
         foreach ($expiring as &$row) {
@@ -37,27 +43,17 @@ class PluginControlecontratosDashboard extends CommonGLPI
         unset($row);
 
         $webdir   = Plugin::getWebDir('controlecontratos');
-        $listBase = $webdir . '/front/contract.php';
-
-        // URLs da lista já filtradas por tipo (opção de busca id 7 = kind).
-        $filterUrl = function ($kind) use ($listBase) {
-            return $listBase . '?' . http_build_query([
-                'reset'    => 'reset',
-                'criteria' => [[
-                    'field'      => 7,
-                    'searchtype' => 'equals',
-                    'value'      => $kind,
-                ]],
-            ]);
-        };
+        $dashBase = $webdir . '/front/dashboard.php';
 
         \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/dashboard.html.twig', [
-            'stats'         => $stats,
-            'expiring'      => $expiring,
-            'form_url'      => $webdir . '/front/contract.form.php',
-            'list_url'      => $listBase,
-            'contract_url'  => $filterUrl('contract'),
-            'license_url'   => $filterUrl('license'),
+            'stats'        => $stats,
+            'expiring'     => $expiring,
+            'active_kind'  => $kind,                 // filtro atual (null|contract|license)
+            'form_url'     => $webdir . '/front/contract.form.php',
+            'list_url'     => $webdir . '/front/contract.php',
+            'dash_all'     => $dashBase,
+            'dash_contract' => $dashBase . '?kind=contract',
+            'dash_license'  => $dashBase . '?kind=license',
         ]);
     }
 }
