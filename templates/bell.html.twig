@@ -1,40 +1,44 @@
 {#
- # Sino de notificações da navbar — CONTROLE DE CONTRATOS.
- # Injetado via hook display_header. Badge numérico + dropdown de vencimentos.
+ # Sino de notificações — CONTROLE DE CONTRATOS.
+ # Widget flutuante fixo (não depende do CSS da navbar). Injetado via display_central.
+ # A lógica de abrir/fechar está em js/bell.js (evita bloqueio de CSP em <script> inline).
  #}
-<div class="dropdown me-2 controlecontratos-bell">
-   <a href="#" class="nav-link px-2" data-bs-toggle="dropdown" aria-label="{{ __('Contratos a vencer', 'controlecontratos') }}" title="{{ __('Contratos a vencer', 'controlecontratos') }}">
-      <i class="ti ti-bell fs-2"></i>
+<div id="cc-bell" style="position:fixed; bottom:20px; right:20px; z-index:1055;">
+   <button type="button" id="cc-bell-btn"
+           class="btn btn-primary rounded-circle shadow"
+           style="width:54px; height:54px; padding:0; position:relative;"
+           title="{{ __('Contratos próximos do término', 'controlecontratos') }}">
+      <i class="ti ti-bell" style="font-size:1.5rem;"></i>
       {% if count > 0 %}
-         <span class="badge bg-red text-white position-absolute top-0 start-100 translate-middle badge-pill">{{ count }}</span>
+         <span class="badge bg-red"
+               style="position:absolute; top:-4px; right:-4px; border-radius:10px;">{{ count }}</span>
       {% endif %}
-   </a>
-   <div class="dropdown-menu dropdown-menu-end dropdown-menu-card" style="min-width: 22rem;">
-      <div class="card">
-         <div class="card-header">
-            <h3 class="card-title">
-               <i class="ti ti-alarm me-1"></i>{{ __('Contratos próximos do término', 'controlecontratos') }}
-            </h3>
-         </div>
-         <div class="list-group list-group-flush" style="max-height: 360px; overflow-y: auto;">
-            {% for row in contracts %}
-               <a class="list-group-item list-group-item-action" href="{{ form_url }}?id={{ row.id }}">
-                  <div class="d-flex align-items-center">
-                     <div class="me-2">{{ row.kind_badge|raw }}</div>
-                     <div class="flex-fill">
-                        <div class="fw-bold">{{ row.name }}</div>
-                        <div class="text-secondary small">
-                           {{ row.partner }} — {{ __('vence em', 'controlecontratos') }} {{ row.date_end|date('d/m/Y') }}
-                        </div>
-                     </div>
-                  </div>
-               </a>
-            {% else %}
-               <div class="list-group-item text-center text-secondary">
-                  {{ __('Nenhum contrato a vencer nos próximos 30 dias.', 'controlecontratos') }}
-               </div>
-            {% endfor %}
-         </div>
+   </button>
+
+   <div id="cc-bell-panel"
+        style="display:none; position:absolute; bottom:64px; right:0; width:340px; max-width:92vw;
+               max-height:60vh; overflow-y:auto; background:var(--tblr-bg-surface, #fff);
+               color:var(--tblr-body-color, #182433); border:1px solid var(--tblr-border-color, #dbe0e5);
+               border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.22);">
+
+      <div style="padding:.65rem .85rem; font-weight:600; border-bottom:1px solid var(--tblr-border-color, #eef0f2);">
+         <i class="ti ti-alarm me-1"></i>{{ __('Contratos próximos do término', 'controlecontratos') }}
       </div>
+
+      {% for row in contracts %}
+         <a href="{{ form_url }}?id={{ row.id }}"
+            style="display:block; padding:.65rem .85rem; text-decoration:none; color:inherit; white-space:normal;
+                   border-bottom:1px solid var(--tblr-border-color, #f3f4f6);">
+            <div style="margin-bottom:2px;">{{ row.kind_badge|raw }}</div>
+            <div style="font-weight:600;">{{ row.name }}</div>
+            <div class="text-secondary" style="font-size:.82rem;">
+               {{ row.partner }} — {{ __('vence em', 'controlecontratos') }} {{ row.date_end|date('d/m/Y') }}
+            </div>
+         </a>
+      {% else %}
+         <div class="text-secondary" style="padding:.9rem; text-align:center;">
+            {{ __('Nenhum contrato a vencer nos próximos 30 dias.', 'controlecontratos') }}
+         </div>
+      {% endfor %}
    </div>
 </div>

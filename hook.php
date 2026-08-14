@@ -254,5 +254,9 @@ function plugin_controlecontratos_display_header()
     if (!Session::getLoginUserID()) {
         return;
     }
+    // Exibe o sino apenas para administradores (quem tem acesso à Configuração).
+    if (!Session::haveRight('config', UPDATE)) {
+        return;
+    }
     PluginControlecontratosContract::showNotificationBell();
 }
