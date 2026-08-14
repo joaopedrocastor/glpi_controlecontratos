@@ -40,8 +40,6 @@
    </div>
 
    <div class="row">
-      {{ fields.textField('value', item.fields['value'], __('Valor (R$)', 'controlecontratos')) }}
-
       {# Aviso de término — antecedência em meses (armazenado em dias) #}
       {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos')) }}
    </div>

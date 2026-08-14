@@ -74,7 +74,6 @@
                   <th>{{ __('Fornecedor / Cliente', 'controlecontratos') }}</th>
                   <th>{{ __('Término', 'controlecontratos') }}</th>
                   <th>{{ __('Situação', 'controlecontratos') }}</th>
-                  <th class="text-end">{{ __('Valor (R$)', 'controlecontratos') }}</th>
                </tr>
             </thead>
             <tbody>
@@ -85,10 +84,9 @@
                      <td>{{ row.partner }}</td>
                      <td>{{ row.date_end|date('d/m/Y') }}</td>
                      <td>{{ row.status_badge|raw }}</td>
-                     <td class="text-end">{{ row.value|number_format(2, ',', '.') }}</td>
                   </tr>
                {% else %}
-                  <tr><td colspan="6" class="text-center text-secondary">{{ __('Nenhum contrato a vencer nos próximos 60 dias.', 'controlecontratos') }}</td></tr>
+                  <tr><td colspan="5" class="text-center text-secondary">{{ __('Nenhum contrato a vencer nos próximos 60 dias.', 'controlecontratos') }}</td></tr>
                {% endfor %}
             </tbody>
          </table>

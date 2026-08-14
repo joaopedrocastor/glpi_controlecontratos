@@ -111,35 +111,30 @@ class PluginControlecontratosCron extends CommonDBTM
             ? sprintf(__('VENCIDO há %d dias', 'controlecontratos'), abs($daysLeft))
             : sprintf(__('vence em %d dias', 'controlecontratos'), $daysLeft);
 
-        $valor = Html::formatNumber($contract['value'], false, 2);
-        $fim   = Html::convDate($contract['date_end']);
+        $fim = Html::convDate($contract['date_end']);
 
         // --- Texto simples (Telegram/WhatsApp) ---
         $plain = sprintf(
             "🔔 *CONTROLE DE CONTRATOS*\n\n" .
             "Contrato: %s\n" .
-            "Fornecedor/Cliente: %s\n" .
-            "Término: %s (%s)\n" .
-            "Valor: R$ %s",
+            "Fornecedor: %s\n" .
+            "Término: %s (%s)",
             $contract['name'],
             $contract['partner'] ?: '-',
             $fim,
-            $situacao,
-            $valor
+            $situacao
         );
 
         // --- Telegram usa HTML ---
         $telegramMsg = sprintf(
             "🔔 <b>CONTROLE DE CONTRATOS</b>\n\n" .
             "<b>Contrato:</b> %s\n" .
-            "<b>Fornecedor/Cliente:</b> %s\n" .
-            "<b>Término:</b> %s (%s)\n" .
-            "<b>Valor:</b> R$ %s",
+            "<b>Fornecedor:</b> %s\n" .
+            "<b>Término:</b> %s (%s)",
             htmlspecialchars($contract['name']),
             htmlspecialchars($contract['partner'] ?: '-'),
             $fim,
-            $situacao,
-            $valor
+            $situacao
         );
 
         // 1) TEAMS — envia uma vez se houver ao menos um optante (canal de grupo).
@@ -148,9 +143,8 @@ class PluginControlecontratosCron extends CommonDBTM
                 sprintf(__('Contrato %s', 'controlecontratos'), $situacao),
                 $contract['name'],
                 [
-                    __('Fornecedor/Cliente', 'controlecontratos') => $contract['partner'] ?: '-',
-                    __('Término', 'controlecontratos')            => $fim,
-                    __('Valor', 'controlecontratos')              => 'R$ ' . $valor,
+                    __('Fornecedor', 'controlecontratos') => $contract['partner'] ?: '-',
+                    __('Término', 'controlecontratos')    => $fim,
                 ]
             );
             $count += $ok ? 1 : 0;
