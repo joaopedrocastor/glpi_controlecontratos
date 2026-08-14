@@ -379,25 +379,16 @@ class PluginControlecontratosContract extends CommonDBTM
             return;
         }
 
-        $contracts = self::getExpiringContracts(30);
-        $count     = count($contracts);
+        $count = count(self::getExpiringContracts(30));
 
         // Não exibe o sino quando não há nada vencendo nos próximos 30 dias.
         if ($count === 0) {
             return;
         }
 
-        foreach ($contracts as &$row) {
-            $row['kind_badge'] = self::getKindBadge($row['kind'] ?? 'contract');
-        }
-        unset($row);
-
-        $webdir = Plugin::getWebDir('controlecontratos');
         \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/bell.html.twig', [
             'count'       => $count,
-            'contracts'   => $contracts,
-            'form_url'    => $webdir . '/front/contract.form.php',
-            'dismiss_url' => $webdir . '/front/bell_dismiss.php',
+            'dismiss_url' => Plugin::getWebDir('controlecontratos') . '/front/bell_dismiss.php',
         ]);
     }
 

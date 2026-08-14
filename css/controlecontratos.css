@@ -18,17 +18,7 @@
     background-color: rgba(214, 57, 57, 0.06);
 }
 
-/* Sino flutuante — remove o marcador/triângulo padrão do <details> */
-#cc-bell > summary {
-    list-style: none;
-}
-#cc-bell > summary::-webkit-details-marker,
-#cc-bell > summary::marker {
-    display: none;
-}
-
-/* Animação de "balançar" — chama atenção enquanto o sino está fechado.
-   Para automaticamente quando o usuário abre o painel ([open]). */
+/* Animação de "balançar" do sino flutuante — chama atenção. */
 @keyframes cc-bell-shake {
     0%, 65%, 100% { transform: rotate(0); }
     70% { transform: rotate(-14deg); }
@@ -38,10 +28,8 @@
     90% { transform: rotate(-4deg); }
     95% { transform: rotate(2deg); }
 }
-#cc-bell > summary i {
+#cc-bell i {
     display: inline-block;
     transform-origin: 50% 3px;
-}
-#cc-bell:not([open]) > summary i {
     animation: cc-bell-shake 2s ease-in-out infinite;
 }
