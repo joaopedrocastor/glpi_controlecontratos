@@ -30,26 +30,29 @@ class PluginControlecontratosMenu extends CommonGLPI
      */
     public static function getMenuContent()
     {
+        $webdir = Plugin::getWebDir('controlecontratos', false);
+
+        // Página principal do menu = Dashboard (ao clicar em "Controle Contratos").
         $menu = [
             'title' => self::getTypeName(2),
-            'page'  => Plugin::getWebDir('controlecontratos', false) . '/front/contract.php',
+            'page'  => $webdir . '/front/dashboard.php',
             'icon'  => self::getIcon(),
         ];
 
-        // Submenus.
-        $menu['options']['contract'] = [
-            'title' => PluginControlecontratosContract::getTypeName(2),
-            'page'  => Plugin::getWebDir('controlecontratos', false) . '/front/contract.php',
-            'icon'  => 'ti ti-file-certificate',
-            'links' => [
-                'search' => Plugin::getWebDir('controlecontratos', false) . '/front/contract.php',
-                'add'    => Plugin::getWebDir('controlecontratos', false) . '/front/contract.form.php',
-            ],
-        ];
+        // Submenus (o Dashboard aparece primeiro, depois a lista e a configuração).
         $menu['options']['dashboard'] = [
             'title' => __('Dashboard', 'controlecontratos'),
-            'page'  => Plugin::getWebDir('controlecontratos', false) . '/front/dashboard.php',
+            'page'  => $webdir . '/front/dashboard.php',
             'icon'  => 'ti ti-dashboard',
+        ];
+        $menu['options']['contract'] = [
+            'title' => PluginControlecontratosContract::getTypeName(2),
+            'page'  => $webdir . '/front/contract.php',
+            'icon'  => 'ti ti-file-certificate',
+            'links' => [
+                'search' => $webdir . '/front/contract.php',
+                'add'    => $webdir . '/front/contract.form.php',
+            ],
         ];
         $menu['options']['config'] = [
             'title' => __('Configuração das APIs', 'controlecontratos'),

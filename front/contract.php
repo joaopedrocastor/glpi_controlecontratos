@@ -16,6 +16,35 @@ Html::header(
     'contract'
 );
 
+// -----------------------------------------------------------------------------
+// Botões de filtro rápido por Tipo (opção de busca id 7 = kind).
+// Monta URLs de busca já com o critério pronto.
+// -----------------------------------------------------------------------------
+$base = Plugin::getWebDir('controlecontratos') . '/front/contract.php';
+
+$buildUrl = function ($kind = null) use ($base) {
+    if ($kind === null) {
+        return $base . '?' . http_build_query(['reset' => 'reset']);
+    }
+    return $base . '?' . http_build_query([
+        'reset'    => 'reset',
+        'criteria' => [[
+            'field'      => 7,          // id da opção de busca "Tipo"
+            'searchtype' => 'equals',
+            'value'      => $kind,      // 'contract' ou 'license'
+        ]],
+    ]);
+};
+
+echo "<div class='mb-2'>";
+echo "<a class='btn btn-sm btn-outline-secondary me-1' href='" . htmlspecialchars($buildUrl()) . "'>"
+    . "<i class='ti ti-list me-1'></i>" . __('Todos', 'controlecontratos') . "</a>";
+echo "<a class='btn btn-sm btn-primary me-1' href='" . htmlspecialchars($buildUrl('contract')) . "'>"
+    . "<i class='ti ti-file-certificate me-1'></i>" . __('Contratos', 'controlecontratos') . "</a>";
+echo "<a class='btn btn-sm text-white me-1' style='background-color:#ae3ec9' href='" . htmlspecialchars($buildUrl('license')) . "'>"
+    . "<i class='ti ti-license me-1'></i>" . __('Licenças', 'controlecontratos') . "</a>";
+echo "</div>";
+
 // Motor de busca nativo do GLPI (Search) — herda filtros, exportação e paginação.
 Search::show('PluginControlecontratosContract');
 
