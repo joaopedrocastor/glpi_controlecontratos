@@ -62,6 +62,19 @@
             }) }}
          </div>
 
+         <hr>
+
+         {# ===================== Sino de notificações ===================== #}
+         <h4 class="mt-2"><i class="ti ti-bell text-red me-1"></i> {{ __('Sino de notificações', 'controlecontratos') }}</h4>
+         <div class="row">
+            {{ fields.dropdownArrayField('bell_visibility', config.fields['bell_visibility']|default('admin'), {
+               'admin': __('Somente administradores', 'controlecontratos'),
+               'all':   __('Todos que enxergam contratos', 'controlecontratos')
+            }, __('Quem vê o sino', 'controlecontratos'), {
+               'helper': __('O sino só aparece quando há contratos/licenças vencendo nos próximos 30 dias.', 'controlecontratos')
+            }) }}
+         </div>
+
          <div class="row">
             {{ fields.sliderField('is_active', config.fields['is_active'], __('Integrações ativas', 'controlecontratos')) }}
          </div>

@@ -116,6 +116,7 @@ function plugin_controlecontratos_install()
             `vapid_public_key`      text,
             `vapid_private_key`     text,
             `vapid_subject`         varchar(255) DEFAULT NULL COMMENT 'mailto: do responsável',
+            `bell_visibility`       varchar(20) NOT NULL DEFAULT 'admin' COMMENT 'admin|all — quem vê o sino de notificações',
             `is_active`             tinyint NOT NULL DEFAULT '1',
             `date_mod`              timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`)
@@ -124,6 +125,14 @@ function plugin_controlecontratos_install()
 
         // Cria a linha única de configuração (singleton id=1).
         $DB->insert($table, ['id' => 1, 'is_active' => 1, 'date_mod' => $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s')]);
+    }
+
+    // Migração idempotente da tabela de config (coluna nova em instalações antigas).
+    if (!$DB->fieldExists($table, 'bell_visibility')) {
+        $DB->doQueryOrDie(
+            "ALTER TABLE `$table` ADD COLUMN `bell_visibility` varchar(20) NOT NULL DEFAULT 'admin' COMMENT 'admin|all — quem vê o sino de notificações' AFTER `vapid_subject`",
+            $DB->error()
+        );
     }
 
     // ---------------------------------------------------------------------
@@ -254,9 +263,21 @@ function plugin_controlecontratos_display_header()
     if (!Session::getLoginUserID()) {
         return;
     }
-    // Exibe o sino apenas para administradores (quem tem acesso à Configuração).
-    if (!Session::haveRight('config', UPDATE)) {
-        return;
+
+    // Regra de visibilidade definida na tela de Configuração (admin|all).
+    $visibility = PluginControlecontratosConfig::getValue('bell_visibility') ?: 'admin';
+
+    if ($visibility === 'admin') {
+        // Só administradores (quem tem acesso à Configuração).
+        if (!Session::haveRight('config', UPDATE)) {
+            return;
+        }
+    } else {
+        // Todos que enxergam contratos/licenças.
+        if (!Session::haveRight('plugin_controlecontratos_contract', READ)) {
+            return;
+        }
     }
+
     PluginControlecontratosContract::showNotificationBell();
 }

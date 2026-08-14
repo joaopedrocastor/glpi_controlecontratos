@@ -358,6 +358,11 @@ class PluginControlecontratosContract extends CommonDBTM
         $contracts = self::getExpiringContracts(30);
         $count     = count($contracts);
 
+        // Não exibe o sino quando não há nada vencendo nos próximos 30 dias.
+        if ($count === 0) {
+            return;
+        }
+
         foreach ($contracts as &$row) {
             $row['kind_badge'] = self::getKindBadge($row['kind'] ?? 'contract');
         }
