@@ -32,11 +32,12 @@ class PluginControlecontratosDashboard extends CommonGLPI
             $kind = null;
         }
 
-        $stats     = PluginControlecontratosContract::getDashboardStats($kind);
-        $expiring  = PluginControlecontratosContract::getExpiringContracts(60, false, $kind);
+        $stats = PluginControlecontratosContract::getDashboardStats($kind);
+        // Tabela lista TODOS (seguindo o filtro de tipo), não só os vencendo.
+        $rows  = PluginControlecontratosContract::getContractsList($kind);
 
         // Anexa o badge de status a cada linha para o template.
-        foreach ($expiring as &$row) {
+        foreach ($rows as &$row) {
             $row['status_badge'] = PluginControlecontratosContract::getStatusBadge($row);
             $row['kind_badge']   = PluginControlecontratosContract::getKindBadge($row['kind'] ?? 'contract');
         }
@@ -47,7 +48,7 @@ class PluginControlecontratosDashboard extends CommonGLPI
 
         \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/dashboard.html.twig', [
             'stats'        => $stats,
-            'expiring'     => $expiring,
+            'rows'         => $rows,
             'active_kind'  => $kind,                 // filtro atual (null|contract|license)
             'form_url'     => $webdir . '/front/contract.form.php',
             'list_url'     => $webdir . '/front/contract.php',

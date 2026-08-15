@@ -340,6 +340,30 @@ class PluginControlecontratosContract extends CommonDBTM
     }
 
     /**
+     * Lista todos os contratos/licenças (não deletados), opcionalmente por tipo.
+     * Usado na tabela do Dashboard (não se limita a vencimentos).
+     *
+     * @param string|null $kind 'contract'|'license' ou null p/ todos.
+     * @return array
+     */
+    public static function getContractsList($kind = null)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $where = ['is_deleted' => 0] + getEntitiesRestrictCriteria(self::getTable());
+        if ($kind !== null) {
+            $where['kind'] = $kind;
+        }
+
+        return iterator_to_array($DB->request([
+            'FROM'  => self::getTable(),
+            'WHERE' => $where,
+            'ORDER' => 'date_end ASC',
+        ]));
+    }
+
+    /**
      * Métricas agregadas para o Dashboard (Tabler stat cards).
      *
      * @return array{active:int, next30:int, next60:int, expired:int}
