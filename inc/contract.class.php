@@ -106,7 +106,76 @@ class PluginControlecontratosContract extends CommonDBTM
             'alert_alerting' => $alertAlerting,
         ]);
 
+        // Script embutido (Html::scriptBlock já traz o nonce CSP e o jQuery pronto).
+        // Usa jQuery porque os dropdowns são select2 (disparam 'change' via jQuery).
+        echo Html::scriptBlock(self::getFormScript());
+
         return true;
+    }
+
+    /**
+     * JS do formulário: periodicidade → data de término, aviso e qtd de licenças.
+     *
+     * @return string
+     */
+    private static function getFormScript()
+    {
+        return <<<'JS'
+$(function () {
+    function q(n) { return document.querySelector('[name="' + n + '"]'); }
+    function pad(n) { return ('0' + n).slice(-2); }
+    function fmt(d) { return pad(d.getDate()) + '-' + pad(d.getMonth() + 1) + '-' + d.getFullYear(); }
+
+    // Data de término = início + N meses (0 = Indeterminada → não mexe).
+    function setEnd() {
+        var db = q('date_begin'), per = q('periodicity'), de = q('date_end');
+        if (!db || !per || !de) { return; }
+        var m = parseInt(per.value, 10);
+        if (!db.value || isNaN(m) || m <= 0) { return; }
+        var d = new Date(db.value + 'T00:00:00');
+        if (isNaN(d.getTime())) { return; }
+        d.setMonth(d.getMonth() + m);
+        if (de._flatpickr) {
+            de._flatpickr.setDate(d, true);
+        } else {
+            de.value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+            alertDate();
+        }
+    }
+
+    // Data do aviso = término − N dias (vermelha quando já está no período de aviso).
+    function alertDate() {
+        var de = q('date_end'), ad = q('alert_days'), out = document.getElementById('cc-alert-date');
+        if (!out) { return; }
+        var days = parseInt(ad && ad.value, 10);
+        if (de && de.value && days > 0) {
+            var d = new Date(de.value + 'T00:00:00');
+            if (isNaN(d.getTime())) { out.textContent = ''; return; }
+            d.setDate(d.getDate() - days);
+            out.textContent = '→ ' + fmt(d);
+            var t = new Date(); t.setHours(0, 0, 0, 0);
+            out.classList.toggle('text-danger', d <= t);
+            out.classList.toggle('text-secondary', d > t);
+        } else {
+            out.textContent = '';
+        }
+    }
+
+    // Campo "Quantidade de licenças" só aparece para o tipo Licença.
+    function toggleQty() {
+        var k = q('kind'), r = document.getElementById('cc-license-qty-row');
+        if (!r) { return; }
+        r.style.display = (k && k.value === 'license') ? '' : 'none';
+    }
+
+    $(document).on('change', '[name=periodicity], [name=date_begin]', function () { setEnd(); alertDate(); });
+    $(document).on('change', '[name=date_end], [name=alert_days]', alertDate);
+    $(document).on('change', '[name=kind]', toggleQty);
+
+    alertDate();
+    toggleQty();
+});
+JS;
     }
 
     /**
