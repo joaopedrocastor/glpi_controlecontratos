@@ -33,15 +33,21 @@
    </div>
 
    <div class="row">
-      {# Periodicidade/duração do contrato (em meses) — como no módulo nativo #}
-      {{ fields.dropdownArrayField('periodicity', item.fields['periodicity']|default(12), period_list, __('Periodicidade do contrato', 'controlecontratos')) }}
+      {# Periodicidade/duração — mostra a data de término prevista (início + duração) #}
+      <div class="col">
+         {{ fields.dropdownArrayField('periodicity', item.fields['periodicity']|default(12), period_list, __('Periodicidade do contrato', 'controlecontratos')) }}
+         <div class="ms-2 text-secondary" id="cc-period-date">{{ period_date ? '→ ' ~ period_date : '' }}</div>
+      </div>
 
       {{ fields.dropdownArrayField('status', item.fields['status'], status_list, __('Status', 'controlecontratos')) }}
    </div>
 
    <div class="row">
-      {# Aviso de término — antecedência em meses (armazenado em dias) #}
-      {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos')) }}
+      {# Aviso de término — mostra a data em que o aviso dispara (término − período) #}
+      <div class="col">
+         {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos')) }}
+         <div class="ms-2 text-secondary" id="cc-alert-date">{{ alert_date ? '→ ' ~ alert_date : '' }}</div>
+      </div>
    </div>
 
    <div class="row">

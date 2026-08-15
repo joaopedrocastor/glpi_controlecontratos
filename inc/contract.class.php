@@ -85,6 +85,20 @@ class PluginControlecontratosContract extends CommonDBTM
     {
         $this->initForm($ID, $options);
 
+        // Datas calculadas exibidas abaixo dos campos (também recalculadas ao vivo via JS).
+        $periodDate = '';
+        if (!empty($this->fields['date_begin']) && !empty($this->fields['periodicity'])) {
+            $periodDate = date('d-m-Y', strtotime(
+                $this->fields['date_begin'] . ' +' . (int) $this->fields['periodicity'] . ' months'
+            ));
+        }
+        $alertDate = '';
+        if (!empty($this->fields['date_end']) && !empty($this->fields['alert_days'])) {
+            $alertDate = date('d-m-Y', strtotime(
+                $this->fields['date_end'] . ' -' . (int) $this->fields['alert_days'] . ' days'
+            ));
+        }
+
         // Renderização nativa via Twig — herda o layout Tabler e a responsividade.
         \Glpi\Application\View\TemplateRenderer::getInstance()->display('@controlecontratos/contract.html.twig', [
             'item'          => $this,
@@ -93,6 +107,8 @@ class PluginControlecontratosContract extends CommonDBTM
             'kind_list'     => self::getKindArray(),
             'alert_list'    => self::getAlertOptions(),
             'period_list'   => self::getPeriodicityOptions(),
+            'period_date'   => $periodDate,
+            'alert_date'    => $alertDate,
         ]);
 
         return true;
