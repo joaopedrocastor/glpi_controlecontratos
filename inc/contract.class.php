@@ -126,6 +126,13 @@ $(function () {
     function pad(n) { return ('0' + n).slice(-2); }
     function fmt(d) { return pad(d.getDate()) + '-' + pad(d.getMonth() + 1) + '-' + d.getFullYear(); }
 
+    // Acha a instância do flatpickr subindo pelos elementos-pai (modo "wrap" do GLPI).
+    function getFP(el) {
+        var n = el;
+        while (n) { if (n._flatpickr) { return n._flatpickr; } n = n.parentElement; }
+        return null;
+    }
+
     // Data de término = início + N meses (0 = Indeterminada → não mexe).
     function setEnd() {
         var db = q('date_begin'), per = q('periodicity'), de = q('date_end');
@@ -135,10 +142,12 @@ $(function () {
         var d = new Date(db.value + 'T00:00:00');
         if (isNaN(d.getTime())) { return; }
         d.setMonth(d.getMonth() + m);
-        if (de._flatpickr) {
-            de._flatpickr.setDate(d, true);
+        var fp = getFP(de);
+        if (fp) {
+            fp.setDate(d, true); // atualiza o campo visível e dispara 'change'
         } else {
             de.value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+            $(de).trigger('change');
             alertDate();
         }
     }
@@ -567,6 +576,18 @@ JS;
         // Quantidade de licenças só faz sentido para o tipo "Licença".
         if (isset($input['kind']) && $input['kind'] !== 'license') {
             $input['license_qty'] = 0;
+        }
+
+        // Garantia no servidor: se a data de término veio vazia mas há
+        // início + periodicidade, calcula (início + N meses).
+        if (empty($input['date_end'])
+            && !empty($input['date_begin'])
+            && !empty($input['periodicity'])
+            && (int) $input['periodicity'] > 0
+        ) {
+            $input['date_end'] = date('Y-m-d', strtotime(
+                $input['date_begin'] . ' +' . (int) $input['periodicity'] . ' months'
+            ));
         }
 
         return $input;
