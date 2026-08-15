@@ -11,17 +11,13 @@ Session::checkRight('config', UPDATE);
 $config = new PluginControlecontratosConfig();
 
 if (isset($_POST['update'])) {
-    // Valida o token CSRF explicitamente (defesa em profundidade).
-    Session::checkCSRF($_POST);
-
+    // O GLPI já valida o token CSRF automaticamente (não repetir: token é de uso único).
     $_POST['id'] = $_POST['id'] ?: 1;
     $config->update($_POST);
 
     Session::addMessageAfterRedirect(__('Configuração salva com sucesso.', 'controlecontratos'));
     Html::back();
 } elseif (isset($_POST['test_channels'])) {
-    Session::checkCSRF($_POST);
-
     // Dispara uma mensagem de teste em todos os canais configurados.
     $ok = [];
     $ok['teams']    = PluginControlecontratosNotifier::sendTeams(

@@ -8,24 +8,21 @@ include('../../../inc/includes.php');
 
 $contract = new PluginControlecontratosContract();
 
-// Valida o token CSRF em toda operação que altera dados (defesa em profundidade).
+// O GLPI já valida o token CSRF automaticamente no formulário genérico do item;
+// não repetir a checagem aqui (o token é de uso único e uma 2ª validação falharia).
 if (isset($_POST['add'])) {
-    Session::checkCSRF($_POST);
     $contract->check(-1, CREATE, $_POST);
     $newID = $contract->add($_POST);
     Html::redirect(PluginControlecontratosContract::getFormURLWithID($newID));
 } elseif (isset($_POST['update'])) {
-    Session::checkCSRF($_POST);
     $contract->check($_POST['id'], UPDATE);
     $contract->update($_POST);
     Html::back();
 } elseif (isset($_POST['purge'])) {
-    Session::checkCSRF($_POST);
     $contract->check($_POST['id'], PURGE);
     $contract->delete($_POST, true);
     $contract->redirectToList();
 } elseif (isset($_POST['delete'])) {
-    Session::checkCSRF($_POST);
     $contract->check($_POST['id'], DELETE);
     $contract->delete($_POST);
     Html::back();

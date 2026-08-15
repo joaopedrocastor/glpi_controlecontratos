@@ -11,8 +11,7 @@ Session::checkLoginUser();
 $pref = new PluginControlecontratosNotificationpref();
 
 if (isset($_POST['update'])) {
-    Session::checkCSRF($_POST);
-
+    // O GLPI já valida o token CSRF automaticamente (token de uso único).
     $current = (int) Session::getLoginUserID();
     $isAdmin = Session::haveRight('plugin_controlecontratos_contract', UPDATE);
 
