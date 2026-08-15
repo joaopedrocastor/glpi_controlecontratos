@@ -413,6 +413,33 @@ JS;
     }
 
     /**
+     * Contratos/licenças exibidos no sino: apenas os com Status = Ativo cujo
+     * término já passou (vencidos) OU cai nos próximos 60 dias.
+     * Mudar o Status para diferente de "Ativo" remove o item do sino.
+     *
+     * @return array
+     */
+    public static function getBellContracts()
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $limit = date('Y-m-d', strtotime('+60 days'));
+
+        $where = [
+            'is_deleted' => 0,
+            'status'     => 'active',              // só ativos — flag != ativo sai do sino
+            'date_end'   => ['<=', $limit],        // vencidos (passado) + próximos 60 dias
+        ] + getEntitiesRestrictCriteria(self::getTable());
+
+        return iterator_to_array($DB->request([
+            'FROM'  => self::getTable(),
+            'WHERE' => $where,
+            'ORDER' => 'date_end ASC',
+        ]));
+    }
+
+    /**
      * Lista todos os contratos/licenças (não deletados), opcionalmente por tipo.
      * Usado na tabela do Dashboard (não se limita a vencimentos).
      *
@@ -487,16 +514,19 @@ JS;
      */
     public static function showNotificationBell()
     {
-        $contracts = self::getExpiringContracts(60);
+        $contracts = self::getBellContracts();
         $count     = count($contracts);
 
-        // Só aparece enquanto houver contratos/licenças vencendo nos próximos 60 dias.
+        // Só aparece enquanto houver algo ativo vencido ou vencendo nos próximos 60 dias.
         if ($count === 0) {
             return;
         }
 
+        $today = new DateTime('today');
         foreach ($contracts as &$row) {
             $row['kind_badge'] = self::getKindBadge($row['kind'] ?? 'contract');
+            // Marca se já venceu (para o texto no painel).
+            $row['is_expired'] = !empty($row['date_end']) && (new DateTime($row['date_end'])) < $today;
         }
         unset($row);
 

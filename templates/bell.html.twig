@@ -28,10 +28,21 @@
          <a href="{{ form_url }}?id={{ row.id }}"
             style="display:block; padding:.65rem .85rem; text-decoration:none; color:inherit; white-space:normal;
                    border-bottom:1px solid var(--tblr-border-color, #f3f4f6);">
-            <div style="margin-bottom:2px;">{{ row.kind_badge|raw }}</div>
+            <div style="margin-bottom:2px;">
+               {{ row.kind_badge|raw }}
+               {% if row.is_expired %}
+                  <span class="badge bg-red ms-1">{{ __('Vencido', 'controlecontratos') }}</span>
+               {% endif %}
+            </div>
             <div style="font-weight:600;">{{ row.name }}</div>
             <div class="text-secondary" style="font-size:.82rem;">
-               {{ row.partner }} — {{ __('vence em', 'controlecontratos') }} {{ row.date_end|date('d/m/Y') }}
+               {{ row.partner }} —
+               {% if row.is_expired %}
+                  {{ __('venceu em', 'controlecontratos') }}
+               {% else %}
+                  {{ __('vence em', 'controlecontratos') }}
+               {% endif %}
+               {{ row.date_end|date('d/m/Y') }}
             </div>
          </a>
       {% else %}
