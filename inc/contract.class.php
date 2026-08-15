@@ -170,10 +170,30 @@ $(function () {
         }
     }
 
-    // Campos específicos aparecem só para o tipo correspondente.
+    // Acha o <label> de um campo (dentro do wrapper .form-field do GLPI).
+    function fieldLabel(name) {
+        var input = q(name);
+        if (!input) { return null; }
+        var wrap = input.closest('.form-field');
+        return wrap ? wrap.querySelector('label') : null;
+    }
+
+    // Troca só o texto do rótulo, preservando o asterisco de obrigatório.
+    function setLabel(name, text) {
+        var lbl = fieldLabel(name);
+        if (!lbl) { return; }
+        if (lbl.childNodes.length && lbl.childNodes[0].nodeType === 3) {
+            lbl.childNodes[0].nodeValue = text + ' ';
+        } else {
+            lbl.insertBefore(document.createTextNode(text + ' '), lbl.firstChild);
+        }
+    }
+
+    // Campos e rótulos que mudam conforme o tipo selecionado.
     function toggleKindFields() {
         var k = q('kind');
         var val = k ? k.value : '';
+
         var map = {
             'cc-license-qty-row': 'license',
             'cc-domain-url-row': 'domain',
@@ -183,6 +203,18 @@ $(function () {
             var r = document.getElementById(id);
             if (r) { r.style.display = (val === map[id]) ? '' : 'none'; }
         });
+
+        // Rótulos das datas conforme o tipo (como nos módulos nativos).
+        if (val === 'domain') {
+            setLabel('date_begin', 'Data de registro');
+            setLabel('date_end', 'Data de expiração');
+        } else if (val === 'certificate') {
+            setLabel('date_begin', 'Data de emissão');
+            setLabel('date_end', 'Data de expiração');
+        } else {
+            setLabel('date_begin', 'Data de início');
+            setLabel('date_end', 'Data de término');
+        }
     }
 
     $(document).on('change', '[name=periodicity], [name=date_begin]', function () { setEnd(); alertDate(); });
