@@ -79,18 +79,35 @@
         }
     }
 
+    // Mostra o campo "Quantidade de licenças" só quando o Tipo for Licença.
+    function toggleLicenseQty() {
+        var kind = q('kind');
+        var row = document.getElementById('cc-license-qty-row');
+        if (!row) {
+            return;
+        }
+        row.style.display = (kind && kind.value === 'license') ? '' : 'none';
+    }
+
     document.addEventListener('change', function (e) {
         if (e.target.name === 'periodicity' || e.target.name === 'date_begin') {
             setEndDate();
             updateAlert();
         } else if (e.target.name === 'date_end' || e.target.name === 'alert_days') {
             updateAlert();
+        } else if (e.target.name === 'kind') {
+            toggleLicenseQty();
         }
     });
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', updateAlert);
-    } else {
+    function init() {
         updateAlert();
+        toggleLicenseQty();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 })();

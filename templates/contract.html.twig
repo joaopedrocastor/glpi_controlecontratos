@@ -23,6 +23,13 @@
       {{ fields.textField('partner', item.fields['partner'], __('Fornecedor', 'controlecontratos')) }}
    </div>
 
+   {# Quantidade de licenças — aparece só quando o Tipo for "Licença" (controlado via JS) #}
+   <div class="row" id="cc-license-qty-row">
+      {{ fields.numberField('license_qty', item.fields['license_qty']|default(1), __('Quantidade de licenças', 'controlecontratos'), {
+         'min': 0
+      }) }}
+   </div>
+
    <div class="row">
       {{ fields.dateField('date_begin', item.fields['date_begin'], __('Data de início', 'controlecontratos'), {
          'required': true

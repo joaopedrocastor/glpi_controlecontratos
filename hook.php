@@ -44,6 +44,7 @@ function plugin_controlecontratos_install()
             `periodicity`      int NOT NULL DEFAULT '12' COMMENT 'Periodicidade/duração do contrato em meses',
             `alert_days`       int NOT NULL DEFAULT '90' COMMENT 'Antecedência do aviso de término, em dias',
             `email_alert`      tinyint NOT NULL DEFAULT '0' COMMENT 'Enviar também aviso por e-mail',
+            `license_qty`      int NOT NULL DEFAULT '0' COMMENT 'Quantidade de licenças (quando kind=license)',
             `last_alert_date`  timestamp NULL DEFAULT NULL,
             `comment`          text,
             `users_id`         int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -71,6 +72,7 @@ function plugin_controlecontratos_install()
     $migrations = [
         'periodicity' => "ALTER TABLE `$table` ADD COLUMN `periodicity` int NOT NULL DEFAULT '12' COMMENT 'Periodicidade/duração do contrato em meses' AFTER `status`",
         'email_alert' => "ALTER TABLE `$table` ADD COLUMN `email_alert` tinyint NOT NULL DEFAULT '0' COMMENT 'Enviar também aviso por e-mail' AFTER `alert_days`",
+        'license_qty' => "ALTER TABLE `$table` ADD COLUMN `license_qty` int NOT NULL DEFAULT '0' COMMENT 'Quantidade de licenças (quando kind=license)' AFTER `email_alert`",
     ];
     foreach ($migrations as $field => $alter) {
         if (!$DB->fieldExists($table, $field)) {

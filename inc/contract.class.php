@@ -495,6 +495,11 @@ class PluginControlecontratosContract extends CommonDBTM
             $input['value'] = 0;
         }
 
+        // Quantidade de licenças só faz sentido para o tipo "Licença".
+        if (isset($input['kind']) && $input['kind'] !== 'license') {
+            $input['license_qty'] = 0;
+        }
+
         return $input;
     }
 }
