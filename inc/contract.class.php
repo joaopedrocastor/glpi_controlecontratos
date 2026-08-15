@@ -170,19 +170,27 @@ $(function () {
         }
     }
 
-    // Campo "Quantidade de licenças" só aparece para o tipo Licença.
-    function toggleQty() {
-        var k = q('kind'), r = document.getElementById('cc-license-qty-row');
-        if (!r) { return; }
-        r.style.display = (k && k.value === 'license') ? '' : 'none';
+    // Campos específicos aparecem só para o tipo correspondente.
+    function toggleKindFields() {
+        var k = q('kind');
+        var val = k ? k.value : '';
+        var map = {
+            'cc-license-qty-row': 'license',
+            'cc-domain-url-row': 'domain',
+            'cc-cert-issuer-row': 'certificate'
+        };
+        Object.keys(map).forEach(function (id) {
+            var r = document.getElementById(id);
+            if (r) { r.style.display = (val === map[id]) ? '' : 'none'; }
+        });
     }
 
     $(document).on('change', '[name=periodicity], [name=date_begin]', function () { setEnd(); alertDate(); });
     $(document).on('change', '[name=date_end], [name=alert_days]', alertDate);
-    $(document).on('change', '[name=kind]', toggleQty);
+    $(document).on('change', '[name=kind]', toggleKindFields);
 
     alertDate();
-    toggleQty();
+    toggleKindFields();
 });
 JS;
     }
@@ -206,6 +214,16 @@ JS;
                 'label' => __('Licença', 'controlecontratos'),
                 'icon'  => 'ti ti-license',
                 'color' => 'bg-purple',
+            ],
+            'certificate' => [
+                'label' => __('Certificado', 'controlecontratos'),
+                'icon'  => 'ti ti-certificate',
+                'color' => 'bg-green',
+            ],
+            'domain' => [
+                'label' => __('Domínio', 'controlecontratos'),
+                'icon'  => 'ti ti-world',
+                'color' => 'bg-cyan',
             ],
         ];
     }
@@ -501,8 +519,10 @@ JS;
             'next30'    => count(self::getExpiringContracts(30, false, $kind)),
             'next60'    => count(self::getExpiringContracts(60, false, $kind)),
             'expired'   => count(self::getExpiringContracts(0, true, $kind)),
-            'contracts' => $countAll(['kind' => 'contract']),
-            'licenses'  => $countAll(['kind' => 'license']),
+            'contracts'    => $countAll(['kind' => 'contract']),
+            'licenses'     => $countAll(['kind' => 'license']),
+            'certificates' => $countAll(['kind' => 'certificate']),
+            'domains'      => $countAll(['kind' => 'domain']),
         ];
     }
 
@@ -603,9 +623,17 @@ JS;
             $input['value'] = 0;
         }
 
-        // Quantidade de licenças só faz sentido para o tipo "Licença".
-        if (isset($input['kind']) && $input['kind'] !== 'license') {
-            $input['license_qty'] = 0;
+        // Campos específicos só valem para o tipo correspondente — zera os demais.
+        if (isset($input['kind'])) {
+            if ($input['kind'] !== 'license') {
+                $input['license_qty'] = 0;
+            }
+            if ($input['kind'] !== 'domain') {
+                $input['domain_url'] = null;
+            }
+            if ($input['kind'] !== 'certificate') {
+                $input['cert_issuer'] = null;
+            }
         }
 
         // Garantia no servidor: se a data de término veio vazia mas há

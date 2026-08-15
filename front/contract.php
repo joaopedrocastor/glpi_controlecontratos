@@ -43,6 +43,10 @@ echo "<a class='btn btn-sm btn-primary me-1' href='" . htmlspecialchars($buildUr
     . "<i class='ti ti-file-certificate me-1'></i>" . __('Contratos', 'controlecontratos') . "</a>";
 echo "<a class='btn btn-sm text-white me-1' style='background-color:#ae3ec9' href='" . htmlspecialchars($buildUrl('license')) . "'>"
     . "<i class='ti ti-license me-1'></i>" . __('Licenças', 'controlecontratos') . "</a>";
+echo "<a class='btn btn-sm btn-success me-1' href='" . htmlspecialchars($buildUrl('certificate')) . "'>"
+    . "<i class='ti ti-certificate me-1'></i>" . __('Certificados', 'controlecontratos') . "</a>";
+echo "<a class='btn btn-sm text-white' style='background-color:#17a2b8' href='" . htmlspecialchars($buildUrl('domain')) . "'>"
+    . "<i class='ti ti-world me-1'></i>" . __('Domínios', 'controlecontratos') . "</a>";
 echo "</div>";
 
 // Motor de busca nativo do GLPI (Search) — herda filtros, exportação e paginação.

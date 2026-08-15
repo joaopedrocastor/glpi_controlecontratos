@@ -23,10 +23,20 @@
       {{ fields.textField('partner', item.fields['partner'], __('Fornecedor', 'controlecontratos')) }}
    </div>
 
-   {# Quantidade de licenças — aparece só quando o Tipo for "Licença" (controlado via JS) #}
+   {# Campos específicos por tipo (mostrados/ocultados via JS conforme o "Tipo") #}
    <div class="row" id="cc-license-qty-row">
       {{ fields.numberField('license_qty', item.fields['license_qty']|default(1), __('Quantidade de licenças', 'controlecontratos'), {
          'min': 0
+      }) }}
+   </div>
+   <div class="row" id="cc-domain-url-row">
+      {{ fields.textField('domain_url', item.fields['domain_url'], __('Endereço do domínio', 'controlecontratos'), {
+         'helper': 'ex: empresa.com.br'
+      }) }}
+   </div>
+   <div class="row" id="cc-cert-issuer-row">
+      {{ fields.textField('cert_issuer', item.fields['cert_issuer'], __('Emissor / Autoridade certificadora', 'controlecontratos'), {
+         'helper': "ex: Let's Encrypt, DigiCert"
       }) }}
    </div>
 

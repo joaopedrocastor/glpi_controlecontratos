@@ -28,7 +28,7 @@ class PluginControlecontratosDashboard extends CommonGLPI
     {
         // Filtro por tipo vindo da URL (?kind=contract|license). null = todos.
         $kind = $_GET['kind'] ?? null;
-        if (!in_array($kind, ['contract', 'license'], true)) {
+        if (!in_array($kind, ['contract', 'license', 'certificate', 'domain'], true)) {
             $kind = null;
         }
 
@@ -52,9 +52,11 @@ class PluginControlecontratosDashboard extends CommonGLPI
             'active_kind'  => $kind,                 // filtro atual (null|contract|license)
             'form_url'     => $webdir . '/front/contract.form.php',
             'list_url'     => $webdir . '/front/contract.php',
-            'dash_all'     => $dashBase,
-            'dash_contract' => $dashBase . '?kind=contract',
-            'dash_license'  => $dashBase . '?kind=license',
+            'dash_all'        => $dashBase,
+            'dash_contract'   => $dashBase . '?kind=contract',
+            'dash_license'    => $dashBase . '?kind=license',
+            'dash_certificate' => $dashBase . '?kind=certificate',
+            'dash_domain'     => $dashBase . '?kind=domain',
         ]);
     }
 }

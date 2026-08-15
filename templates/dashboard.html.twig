@@ -19,9 +19,15 @@
       <a href="{{ dash_contract }}" class="btn btn-sm me-1 {{ active_kind == 'contract' ? 'btn-primary' : 'btn-outline-primary' }}">
          <i class="ti ti-file-certificate me-1"></i>{{ __('Contratos', 'controlecontratos') }}
       </a>
-      <a href="{{ dash_license }}" class="btn btn-sm text-white"
+      <a href="{{ dash_license }}" class="btn btn-sm me-1 text-white"
          style="background-color:{{ active_kind == 'license' ? '#ae3ec9' : '#c98fd9' }}">
          <i class="ti ti-license me-1"></i>{{ __('Licenças', 'controlecontratos') }}
+      </a>
+      <a href="{{ dash_certificate }}" class="btn btn-sm me-1 {{ active_kind == 'certificate' ? 'btn-success' : 'btn-outline-success' }}">
+         <i class="ti ti-certificate me-1"></i>{{ __('Certificados', 'controlecontratos') }}
+      </a>
+      <a href="{{ dash_domain }}" class="btn btn-sm {{ active_kind == 'domain' ? 'btn-cyan text-white' : 'btn-outline-cyan' }}">
+         <i class="ti ti-world me-1"></i>{{ __('Domínios', 'controlecontratos') }}
       </a>
    </div>
 
@@ -49,6 +55,34 @@
                   <div class="col">
                      <div class="font-weight-medium h1 mb-0">{{ stats.licenses }}</div>
                      <div class="text-secondary">{{ __('Licenças', 'controlecontratos') }}</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      {# Total de Certificados #}
+      <div class="col-sm-6 col-lg">
+         <div class="card card-sm">
+            <div class="card-body">
+               <div class="row align-items-center">
+                  <div class="col-auto"><span class="bg-green text-white avatar"><i class="ti ti-certificate"></i></span></div>
+                  <div class="col">
+                     <div class="font-weight-medium h1 mb-0">{{ stats.certificates }}</div>
+                     <div class="text-secondary">{{ __('Certificados', 'controlecontratos') }}</div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      {# Total de Domínios #}
+      <div class="col-sm-6 col-lg">
+         <div class="card card-sm">
+            <div class="card-body">
+               <div class="row align-items-center">
+                  <div class="col-auto"><span class="bg-cyan text-white avatar"><i class="ti ti-world"></i></span></div>
+                  <div class="col">
+                     <div class="font-weight-medium h1 mb-0">{{ stats.domains }}</div>
+                     <div class="text-secondary">{{ __('Domínios', 'controlecontratos') }}</div>
                   </div>
                </div>
             </div>
@@ -105,8 +139,12 @@
                {{ __('Contratos', 'controlecontratos') }}
             {% elseif active_kind == 'license' %}
                {{ __('Licenças', 'controlecontratos') }}
+            {% elseif active_kind == 'certificate' %}
+               {{ __('Certificados', 'controlecontratos') }}
+            {% elseif active_kind == 'domain' %}
+               {{ __('Domínios', 'controlecontratos') }}
             {% else %}
-               {{ __('Contratos e Licenças', 'controlecontratos') }}
+               {{ __('Todos os registros', 'controlecontratos') }}
             {% endif %}
          </h3>
       </div>
