@@ -33,21 +33,17 @@
    </div>
 
    <div class="row">
-      {# Periodicidade/duração — mostra a data de término prevista (início + duração) #}
-      <div class="col">
-         {{ fields.dropdownArrayField('periodicity', item.fields['periodicity']|default(12), period_list, __('Periodicidade do contrato', 'controlecontratos')) }}
-         <div class="ms-2 text-secondary" id="cc-period-date">{{ period_date ? '→ ' ~ period_date : '' }}</div>
-      </div>
+      {{ fields.dropdownArrayField('periodicity', item.fields['periodicity']|default(12), period_list, __('Periodicidade do contrato', 'controlecontratos')) }}
 
       {{ fields.dropdownArrayField('status', item.fields['status'], status_list, __('Status', 'controlecontratos')) }}
    </div>
 
    <div class="row">
-      {# Aviso de término — mostra a data em que o aviso dispara (término − período) #}
-      <div class="col">
-         {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos')) }}
-         <div class="ms-2 text-secondary" id="cc-alert-date">{{ alert_date ? '→ ' ~ alert_date : '' }}</div>
-      </div>
+      {# Aviso de término — a data (término − período) aparece embaixo do campo,
+         em vermelho quando já está no período de aviso (como o módulo nativo). #}
+      {{ fields.dropdownArrayField('alert_days', item.fields['alert_days']|default(90), alert_list, __('Aviso de término', 'controlecontratos'), {
+         'add_field_html': '<div id="cc-alert-date" class="mt-1 fw-bold ' ~ (alert_alerting ? 'text-danger' : 'text-secondary') ~ '">' ~ (alert_date ? '→ ' ~ alert_date : '') ~ '</div>'
+      }) }}
    </div>
 
    <div class="row">
