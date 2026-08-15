@@ -1,7 +1,9 @@
 /**
- * Data do aviso no formulário de contrato — CONTROLE DE CONTRATOS.
- * Aviso = data de término − antecedência (dias). Mostra embaixo do campo e
- * fica vermelha quando já se está dentro do período de aviso (como o nativo).
+ * Cálculos do formulário de contrato — CONTROLE DE CONTRATOS.
+ *  - Periodicidade: Data de término = Data de início + duração (meses).
+ *    "Indeterminada" (0) não altera a data.
+ *  - Aviso: data = Data de término − antecedência (dias); fica vermelha quando
+ *    já se está dentro do período de aviso (como o módulo nativo).
  * Recalcula ao vivo; delegação de evento (robusto a select2/flatpickr).
  */
 (function () {
@@ -17,14 +19,42 @@
         return dd + '-' + mm + '-' + d.getFullYear();
     }
 
-    function update() {
+    // Data de término = início + N meses (só quando a periodicidade > 0).
+    function setEndDate() {
+        var db = q('date_begin');
+        var per = q('periodicity');
+        var de = q('date_end');
+        if (!db || !per || !de) {
+            return;
+        }
+        var months = parseInt(per.value, 10);
+        if (!db.value || isNaN(months) || months <= 0) {
+            return; // Indeterminada → não mexe na data de término.
+        }
+        var d = new Date(db.value + 'T00:00:00');
+        if (isNaN(d.getTime())) {
+            return;
+        }
+        d.setMonth(d.getMonth() + months);
+
+        if (de._flatpickr) {
+            de._flatpickr.setDate(d, true); // true = dispara 'change' → recalcula o aviso
+        } else {
+            de.value = d.getFullYear() + '-' +
+                String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                String(d.getDate()).padStart(2, '0');
+            updateAlert();
+        }
+    }
+
+    // Data do aviso = término − antecedência (dias).
+    function updateAlert() {
         var de = q('date_end');
         var ad = q('alert_days');
         var out = document.getElementById('cc-alert-date');
         if (!out) {
             return;
         }
-
         var days = parseInt(ad && ad.value, 10);
         if (de && de.value && days > 0) {
             var d = new Date(de.value + 'T00:00:00');
@@ -50,14 +80,17 @@
     }
 
     document.addEventListener('change', function (e) {
-        if (e.target.name === 'date_end' || e.target.name === 'alert_days') {
-            update();
+        if (e.target.name === 'periodicity' || e.target.name === 'date_begin') {
+            setEndDate();
+            updateAlert();
+        } else if (e.target.name === 'date_end' || e.target.name === 'alert_days') {
+            updateAlert();
         }
     });
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', update);
+        document.addEventListener('DOMContentLoaded', updateAlert);
     } else {
-        update();
+        updateAlert();
     }
 })();
