@@ -487,10 +487,10 @@ JS;
      */
     public static function showNotificationBell()
     {
-        $contracts = self::getExpiringContracts(30);
+        $contracts = self::getExpiringContracts(60);
         $count     = count($contracts);
 
-        // Só aparece enquanto houver contratos/licenças vencendo nos próximos 30 dias.
+        // Só aparece enquanto houver contratos/licenças vencendo nos próximos 60 dias.
         if ($count === 0) {
             return;
         }
