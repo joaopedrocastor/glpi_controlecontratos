@@ -39,6 +39,9 @@
          'helper': "ex: Let's Encrypt, DigiCert"
       }) }}
    </div>
+   <div class="row" id="cc-service-tag-row">
+      {{ fields.textField('service_tag', item.fields['service_tag'], __('S/N - Service Tag', 'controlecontratos')) }}
+   </div>
 
    <div class="row">
       {{ fields.dateField('date_begin', item.fields['date_begin'], __('Data de início', 'controlecontratos'), {

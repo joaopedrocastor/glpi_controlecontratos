@@ -47,6 +47,7 @@ function plugin_controlecontratos_install()
             `license_qty`      int NOT NULL DEFAULT '0' COMMENT 'Quantidade de licenças (quando kind=license)',
             `domain_url`       varchar(255) DEFAULT NULL COMMENT 'Endereço do domínio (quando kind=domain)',
             `cert_issuer`      varchar(255) DEFAULT NULL COMMENT 'Autoridade emissora (quando kind=certificate)',
+            `service_tag`      varchar(255) DEFAULT NULL COMMENT 'S/N - Service Tag (quando kind=contract)',
             `last_alert_date`  timestamp NULL DEFAULT NULL,
             `comment`          text,
             `users_id`         int {$default_key_sign} NOT NULL DEFAULT '0',
@@ -77,6 +78,7 @@ function plugin_controlecontratos_install()
         'license_qty' => "ALTER TABLE `$table` ADD COLUMN `license_qty` int NOT NULL DEFAULT '0' COMMENT 'Quantidade de licenças (quando kind=license)' AFTER `email_alert`",
         'domain_url'  => "ALTER TABLE `$table` ADD COLUMN `domain_url` varchar(255) DEFAULT NULL COMMENT 'Endereço do domínio (quando kind=domain)' AFTER `license_qty`",
         'cert_issuer' => "ALTER TABLE `$table` ADD COLUMN `cert_issuer` varchar(255) DEFAULT NULL COMMENT 'Autoridade emissora (quando kind=certificate)' AFTER `domain_url`",
+        'service_tag' => "ALTER TABLE `$table` ADD COLUMN `service_tag` varchar(255) DEFAULT NULL COMMENT 'S/N - Service Tag (quando kind=contract)' AFTER `cert_issuer`",
     ];
     foreach ($migrations as $field => $alter) {
         if (!$DB->fieldExists($table, $field)) {

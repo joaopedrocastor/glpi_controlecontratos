@@ -197,7 +197,8 @@ $(function () {
         var map = {
             'cc-license-qty-row': 'license',
             'cc-domain-url-row': 'domain',
-            'cc-cert-issuer-row': 'certificate'
+            'cc-cert-issuer-row': 'certificate',
+            'cc-service-tag-row': 'contract'
         };
         Object.keys(map).forEach(function (id) {
             var r = document.getElementById(id);
@@ -665,6 +666,9 @@ JS;
             }
             if ($input['kind'] !== 'certificate') {
                 $input['cert_issuer'] = null;
+            }
+            if ($input['kind'] !== 'contract') {
+                $input['service_tag'] = null;
             }
         }
 
